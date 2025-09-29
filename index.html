@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intérprete de Pseudocódigo por Bloques</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            width: 100vw;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: calc(100vh - 20px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .blocks-panel {
+            width: 280px;
+            background: #f8f9fa;
+            border-right: 2px solid #ddd;
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .panel-section {
+            margin-bottom: 25px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .workspace {
+            flex: 1;
+            background: #f0f0f0;
+            position: relative;
+            overflow-y: scroll;
+            overflow-x: auto;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle, #ddd 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .workspace-content {
+            min-height: 3000px;
+            position: relative;
+            width: 100%;
+        }
+
+        .controls-panel {
+            width: 300px;
+            background: #f8f9fa;
+            border-left: 3px solid #2196F3;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .palette-block {
+            margin: 8px 0;
+            cursor: grab;
+            user-select: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .palette-block:hover {
+            transform: scale(1.02);
+        }
+
+        .palette-block:active {
+            cursor: grabbing;
+        }
+
+        .block-control {
+            background: #FFAB19;
+            color: white;
+        }
+
+        .block-data {
+            background: #FF6680;
+            color: white;
+        }
+
+        .block-operator {
+            background: #59C059;
+            color: white;
+        }
+
+        .block-condition {
+            background: #5CB1D6;
+            color: white;
+        }
+
+        .workspace-block {
+            position: absolute;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 10;
+            min-width: 180px;
+        }
+
+        .workspace-block.selected {
+            outline: 3px solid #2196F3;
+            outline-offset: 2px;
+        }
+
+        .workspace-block.executing {
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .block-slot {
+            display: inline-block;
+            min-width: 60px;
+            min-height: 24px;
+            background: rgba(255,255,255,0.3);
+            border: 2px dashed rgba(255,255,255,0.6);
+            border-radius: 4px;
+            padding: 2px 6px;
+            margin: 0 4px;
+            vertical-align: middle;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .block-slot:hover {
+            background: rgba(255,255,255,0.5);
+            border-color: white;
+        }
+
+        .block-slot.filled {
+            background: rgba(255,255,255,0.8);
+            border: 2px solid white;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .block-slot.drop-target {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+        }
+
+        .block-input {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            color: white;
+            min-width: 100px;
+            margin: 0 4px;
+            font-weight: 500;
+        }
+
+        .block-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .block-input:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .block-container {
+            border: 2px dashed rgba(255,255,255,0.4);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 8px;
+            min-height: 60px;
+            background: rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .block-container.drop-active {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+            border-style: solid;
+        }
+        
+        .block-container-label {
+            position: absolute;
+            top: -8px;
+            left: 10px;
+            background: inherit;
+            padding: 0 5px;
+            font-size: 10px;
+            opacity: 0.7;
+        }
+        
+        .nested-block {
+            position: relative;
+            margin: 5px 0;
+            display: block;
+        }
+
+        .variable-item {
+            background: #FF6680;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin: 4px;
+            display: inline-block;
+            cursor: grab;
+            font-size: 11px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .variable-item:active {
+            cursor: grabbing;
+        }
+
+        .btn-create-var {
+            background: linear-gradient(45deg, #9c27b0, #7b1fa2);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-execute {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .btn-reset {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .btn-clear {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+            font-size: 14px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .output-area {
+            min-height: 150px;
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 15px;
+        }
+
+        .variables-display {
+            min-height: 100px;
+            padding: 15px;
+            background: #e3f2fd;
+            border: 2px solid #2196F3;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .variable-value-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px;
+            margin: 4px 0;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .var-name {
+            font-weight: bold;
+            color: #1976D2;
+        }
+
+        .var-value {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .block-start, .block-end {
+            border-radius: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #selectedBlockInfo {
+            margin-top: 10px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            font-size: 11px;
+            min-height: 50px;
+            color: #666;
+            border: 2px solid #ddd;
+        }
+
+        #selectedBlockInfo.active {
+            background: #e3f2fd;
+            color: #1976D2;
+            border-color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧩 Intérprete de Pseudocódigo por Bloques</h1>
+            <p>Sistema de programación visual estilo Scratch</p>
+        </div>
+
+        <div class="main-content">
+            <div class="blocks-panel">
+                <div class="panel-section">
+                    <div class="panel-title">⚙️ Control</div>
+                    <div class="palette-block block-control" draggable="true" data-type="start">
+                        🏁 INICIO
+                    </div>
+                    <div class="palette-block block-control" draggable="true" data-type="end">
+                        🏁 FIN
+                    </div>
+                    <div class="palette-block block-condition" draggable="true" data-type="if">
+                        🔀 SI... ENTONCES
+                    </div>
+                    <div class="palette-block block-condition" draggable="true" data-type="else">
+                        🔄 SINO
+                    </div>
+                    <div class="palette-block block-control" draggable="true" data-type="while" style="background: #9C27B0;">
+                        🔁 MIENTRAS
+                    </div>
+                    <div class="palette-block block-control" draggable="true" data-type="for" style="background: #673AB7;">
+                        🔂 PARA
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <div class="panel-title">💾 Datos</div>
+                    <div class="palette-block block-data" draggable="true" data-type="input">
+                        📥 LEER DEL TECLADO
+                    </div>
+                    <div class="palette-block block-data" draggable="true" data-type="output">
+                        📤 ESCRIBIR EN PANTALLA
+                    </div>
+                    <div class="palette-block block-operator" draggable="true" data-type="calculate">
+                        🧮 CALCULAR
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <div class="panel-title">📋 Variables</div>
+                    <button class="btn-create-var" id="btnCreateVar">+ Crear Variable</button>
+                    <div id="variablesList"></div>
+                </div>
+                
+                <div class="panel-section">
+                    <div class="panel-title">🗑️ Eliminar Bloque</div>
+                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">1. Haz clic en un bloque<br>2. Presiona eliminar</p>
+                    <button class="btn-delete" id="btnDelete">🗑️ Eliminar</button>
+                    <div id="selectedBlockInfo">
+                        Ningún bloque seleccionado
+                    </div>
+                </div>
+            </div>
+
+            <div class="workspace" id="workspace">
+                <div class="workspace-content" id="workspaceContent">
+                    <p style="color: #999; text-align: center; margin-top: 100px;" id="emptyMessage">
+                        Arrastra bloques aquí para construir tu programa
+                    </p>
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="panel-title">🎮 Controles</div>
+                <button class="btn-execute" id="btnExecute">▶️ Ejecutar Programa</button>
+                <button class="btn-reset" id="btnReset">🔄 Reiniciar</button>
+                <button class="btn-clear" id="btnClear">🗑️ Limpiar Todo</button>
+
+                <div class="panel-title">🖥️ Salida del Programa</div>
+                <div class="output-area" id="outputArea">
+                    El resultado aparecerá aquí...
+                </div>
+
+                <div class="panel-title">📊 Variables en Memoria</div>
+                <div class="variables-display" id="variablesDisplay">
+                    <p style="color: #666; font-size: 11px;">Las variables aparecerán durante la ejecución...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let app = {
+            blocks: [],
+            variables: {},
+            output: [],
+            variableNames: [],
+            blockCounter: 0,
+            selectedBlockId: null
+        };
+
+        // Inicializar
+        function init() {
+            setupEventListeners();
+            
+            document.getElementById('btnCreateVar').onclick = createVariable;
+            document.getElementById('btnExecute').onclick = executeProgram;
+            document.getElementById('btnReset').onclick = resetExecution;
+            document.getElementById('btnClear').onclick = clearWorkspace;
+            document.getElementById('btnDelete').onclick = deleteSelectedBlock;
+        }
+
+        function setupEventListeners() {
+            const workspace = document.getElementById('workspace');
+            
+            document.querySelectorAll('.palette-block').forEach(block => {
+                block.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('blockType', e.target.dataset.type);
+                    e.dataTransfer.setData('fromPalette', 'true');
+                    e.target.style.opacity = '0.5';
+                });
+                
+                block.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                });
+            });
+
+            workspace.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+
+            workspace.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const blockType = e.dataTransfer.getData('blockType');
+                const fromPalette = e.dataTransfer.getData('fromPalette');
+                
+                if (!fromPalette || !blockType) return;
+                
+                const rect = workspace.getBoundingClientRect();
+                const x = e.clientX - rect.left + workspace.scrollLeft - 10;
+                const y = e.clientY - rect.top + workspace.scrollTop - 10;
+                
+                createBlock(blockType, x, y);
+                
+                const emptyMsg = document.getElementById('emptyMessage');
+                if (emptyMsg) emptyMsg.style.display = 'none';
+            });
+            
+            workspace.addEventListener('click', (e) => {
+                if (e.target.id === 'workspace' || e.target.id === 'workspaceContent' || e.target.id === 'emptyMessage') {
+                    deselectAll();
+                }
+            });
+        }
+
+        function createBlock(type, x, y) {
+            const blockId = `block_${app.blockCounter++}`;
+            const block = {
+                id: blockId,
+                type: type,
+                x: x,
+                y: y,
+                data: {},
+                children: []
+            };
+
+            app.blocks.push(block);
+            renderBlock(block);
+            console.log('Bloque creado:', type, blockId);
+        }
+
+        function renderBlock(block) {
+            const workspaceContent = document.getElementById('workspaceContent');
+            const blockEl = document.createElement('div');
+            blockEl.className = `workspace-block block-${block.type}`;
+            blockEl.id = block.id;
+            blockEl.style.left = `${block.x}px`;
+            blockEl.style.top = `${block.y}px`;
+            
+            blockEl.onclick = (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.classList.contains('block-slot')) {
+                    return;
+                }
+                e.stopPropagation();
+                selectBlock(block.id);
+            };
+
+            switch(block.type) {
+                case 'start':
+                    blockEl.className += ' block-control block-start';
+                    blockEl.innerHTML = '🏁 INICIO';
+                    break;
+                case 'end':
+                    blockEl.className += ' block-control block-end';
+                    blockEl.innerHTML = '🏁 FIN';
+                    break;
+                case 'input':
+                    blockEl.className += ' block-data';
+                    blockEl.innerHTML = `
+                        <div>📥 <strong>LEER DEL TECLADO</strong></div>
+                        <input class="block-input" placeholder="Mensaje..." 
+                               value="${block.data.message || ''}"
+                               oninput="updateBlockData('${block.id}', 'message', this.value)">
+                        <div style="margin-top: 6px;">
+                            Guardar en: <span class="block-slot ${block.data.variable ? 'filled' : ''}" 
+                                ondrop="dropVariable(event, '${block.id}', 'variable')"
+                                ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
+                                ondragleave="event.target.classList.remove('drop-target')">
+                                ${block.data.variable || 'variable'}
+                            </span>
+                        </div>
+                    `;
+                    break;
+                case 'output':
+                    blockEl.className += ' block-data';
+                    blockEl.innerHTML = `
+                        <div>📤 <strong>ESCRIBIR EN PANTALLA</strong></div>
+                        <input class="block-input" placeholder="Mensaje..." 
+                               value="${block.data.message || ''}"
+                               oninput="updateBlockData('${block.id}', 'message', this.value)">
+                        <div style="margin-top: 6px;">
+                            Mostrar: <span class="block-slot ${block.data.variable ? 'filled' : ''}"
+                                ondrop="dropVariable(event, '${block.id}', 'variable')"
+                                ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
+                                ondragleave="event.target.classList.remove('drop-target')">
+                                ${block.data.variable || 'variable'}
+                            </span>
+                        </div>
+                    `;
+                    break;
+                case 'calculate':
+                    blockEl.className += ' block-operator';
+                    blockEl.innerHTML = `
+                        <div>🧮 <strong>CALCULAR</strong></div>
+                        <div style="margin-top: 6px;">
+                            <span class="block-slot ${block.data.targetVar ? 'filled' : ''}"
+                                ondrop="dropVariable(event, '${block.id}', 'targetVar')"
+                                ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
+                                ondragleave="event.target.classList.remove('drop-target')">
+                                ${block.data.targetVar || 'variable'}
+                            </span> = 
+                            <input class="block-input" style="width: 140px;" placeholder="expresión (a+b)" 
+                                   value="${block.data.expression || ''}"
+                                   oninput="updateBlockData('${block.id}', 'expression', this.value)">
+                        </div>
+                    `;
+                    break;
+                case 'if':
+                    blockEl.className += ' block-condition';
+                    blockEl.style.minWidth = '300px';
+                    blockEl.innerHTML = `
+                        <div><strong>SI</strong> 
+                            <input class="block-input" style="width: 160px;" placeholder="condición (a>5)" 
+                                   value="${block.data.condition || ''}"
+                                   oninput="updateBlockData('${block.id}', 'condition', this.value)">
+                            <strong>ENTONCES</strong>
+                        </div>
+                        <div class="block-container" id="container_${block.id}"
+                             ondrop="dropIntoContainer(event, '${block.id}')"
+                             ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')"
+                             ondragleave="event.currentTarget.classList.remove('drop-active')">
+                            <span class="block-container-label">Arrastra bloques aquí</span>
+                            <div id="children_${block.id}"></div>
+                        </div>
+                    `;
+                    break;
+                case 'else':
+                    blockEl.className += ' block-condition';
+                    blockEl.style.minWidth = '300px';
+                    blockEl.innerHTML = `
+                        <div><strong>SINO</strong></div>
+                        <div class="block-container" id="container_${block.id}"
+                             ondrop="dropIntoContainer(event, '${block.id}')"
+                             ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')"
+                             ondragleave="event.currentTarget.classList.remove('drop-active')">
+                            <span class="block-container-label">Arrastra bloques aquí</span>
+                            <div id="children_${block.id}"></div>
+                        </div>
+                    `;
+                    break;
+                case 'while':
+                    blockEl.className += ' block-control';
+                    blockEl.style.background = '#9C27B0';
+                    blockEl.style.minWidth = '300px';
+                    blockEl.innerHTML = `
+                        <div><strong>🔁 MIENTRAS</strong> 
+                            <input class="block-input" style="width: 140px;" placeholder="condición (i<10)" 
+                                   value="${block.data.condition || ''}"
+                                   oninput="updateBlockData('${block.id}', 'condition', this.value)">
+                            <strong>HACER</strong>
+                        </div>
+                        <div class="block-container" id="container_${block.id}"
+                             ondrop="dropIntoContainer(event, '${block.id}')"
+                             ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')"
+                             ondragleave="event.currentTarget.classList.remove('drop-active')">
+                            <span class="block-container-label">Instrucciones del ciclo</span>
+                            <div id="children_${block.id}"></div>
+                        </div>
+                    `;
+                    break;
+                case 'for':
+                    blockEl.className += ' block-control';
+                    blockEl.style.background = '#673AB7';
+                    blockEl.style.minWidth = '350px';
+                    blockEl.innerHTML = `
+                        <div><strong>🔂 PARA</strong></div>
+                        <div style="margin-top: 6px; font-size: 11px;">
+                            <span class="block-slot ${block.data.variable ? 'filled' : ''}"
+                                ondrop="dropVariable(event, '${block.id}', 'variable')"
+                                ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
+                                ondragleave="event.target.classList.remove('drop-target')">
+                                ${block.data.variable || 'i'}
+                            </span> desde 
+                            <input class="block-input" style="width: 50px;" placeholder="1" 
+                                   value="${block.data.start || ''}"
+                                   oninput="updateBlockData('${block.id}', 'start', this.value)">
+                            hasta 
+                            <input class="block-input" style="width: 50px;" placeholder="10" 
+                                   value="${block.data.end || ''}"
+                                   oninput="updateBlockData('${block.id}', 'end', this.value)">
+                        </div>
+                        <div class="block-container" id="container_${block.id}"
+                             ondrop="dropIntoContainer(event, '${block.id}')"
+                             ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')"
+                             ondragleave="event.currentTarget.classList.remove('drop-active')">
+                            <span class="block-container-label">Instrucciones del ciclo</span>
+                            <div id="children_${block.id}"></div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            makeDraggable(blockEl);
+            workspaceContent.appendChild(blockEl);
+        }
+
+        function makeDraggable(element) {
+            let isDragging = false;
+            let offsetX = 0;
+            let offsetY = 0;
+
+            element.addEventListener('mousedown', (e) => {
+                if (e.target.tagName === 'INPUT' || 
+                    e.target.classList.contains('block-slot') ||
+                    e.target.classList.contains('block-container')) {
+                    return;
+                }
+                
+                isDragging = true;
+                element.style.zIndex = '100';
+                
+                const rect = element.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const workspace = document.getElementById('workspace');
+                const workspaceRect = workspace.getBoundingClientRect();
+                
+                let newX = e.clientX - workspaceRect.left - offsetX + workspace.scrollLeft;
+                let newY = e.clientY - workspaceRect.top - offsetY + workspace.scrollTop;
+                
+                newX = Math.max(0, newX);
+                newY = Math.max(0, newY);
+                
+                element.style.left = `${newX}px`;
+                element.style.top = `${newY}px`;
+                
+                const block = app.blocks.find(b => b.id === element.id);
+                if (block) {
+                    block.x = newX;
+                    block.y = newY;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    element.style.zIndex = '10';
+                }
+            });
+        }
+
+        function selectBlock(blockId) {
+            deselectAll();
+            
+            app.selectedBlockId = blockId;
+            const blockEl = document.getElementById(blockId);
+            if (blockEl) {
+                blockEl.classList.add('selected');
+            }
+            
+            const block = app.blocks.find(b => b.id === blockId);
+            const infoEl = document.getElementById('selectedBlockInfo');
+            if (infoEl && block) {
+                const typeNames = {
+                    'start': 'INICIO', 'end': 'FIN', 'input': 'LEER',
+                    'output': 'ESCRIBIR', 'calculate': 'CALCULAR',
+                    'if': 'SI', 'else': 'SINO', 'while': 'MIENTRAS', 'for': 'PARA'
+                };
+                infoEl.innerHTML = `<strong>✓ Seleccionado:</strong><br>${typeNames[block.type] || block.type}`;
+                infoEl.classList.add('active');
+            }
+            console.log('Bloque seleccionado:', blockId);
+        }
+
+        function deselectAll() {
+            app.selectedBlockId = null;
+            document.querySelectorAll('.workspace-block').forEach(el => {
+                el.classList.remove('selected');
+            });
+            const infoEl = document.getElementById('selectedBlockInfo');
+            if (infoEl) {
+                infoEl.innerHTML = 'Ningún bloque seleccionado';
+                infoEl.classList.remove('active');
+            }
+        }
+
+        function deleteSelectedBlock() {
+            if (!app.selectedBlockId) {
+                alert('Primero selecciona un bloque haciendo clic sobre él');
+                return;
+            }
+            
+            const blockIndex = app.blocks.findIndex(b => b.id === app.selectedBlockId);
+            if (blockIndex > -1) {
+                const blockEl = document.getElementById(app.selectedBlockId);
+                if (blockEl) blockEl.remove();
+                
+                app.blocks.splice(blockIndex, 1);
+                console.log('Bloque eliminado');
+                
+                const infoEl = document.getElementById('selectedBlockInfo');
+                if (infoEl) {
+                    infoEl.innerHTML = '✓ Bloque eliminado';
+                    infoEl.classList.remove('active');
+                    setTimeout(() => {
+                        infoEl.innerHTML = 'Ningún bloque seleccionado';
+                    }, 1500);
+                }
+                
+                app.selectedBlockId = null;
+            }
+        }
+
+        function updateBlockData(blockId, key, value) {
+            const block = app.blocks.find(b => b.id === blockId);
+            if (block) {
+                block.data[key] = value;
+                console.log(`${blockId}.${key} = ${value}`);
+            }
+        }
+
+        function dropVariable(event, blockId, slotName) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.target.classList.remove('drop-target');
+            
+            const varName = event.dataTransfer.getData('varName');
+            if (varName) {
+                const block = app.blocks.find(b => b.id === blockId);
+                if (block) {
+                    block.data[slotName] = varName;
+                    event.target.textContent = varName;
+                    event.target.classList.add('filled');
+                    console.log(`Variable ${varName} asignada a ${slotName}`);
+                }
+            }
+        }
+
+        function dropIntoContainer(event, parentBlockId) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.remove('drop-active');
+            
+            const blockType = event.dataTransfer.getData('blockType');
+            const fromPalette = event.dataTransfer.getData('fromPalette');
+            
+            console.log('Drop en contenedor:', parentBlockId, 'Tipo:', blockType);
+            
+            if (fromPalette && blockType) {
+                const newBlock = {
+                    id: `block_${app.blockCounter++}`,
+                    type: blockType,
+                    data: {},
+                    parent: parentBlockId,
+                    isNested: true,
+                    children: []
+                };
+                
+                console.log('Creando bloque anidado:', newBlock.id);
+                app.blocks.push(newBlock);
+                
+                const parentBlock = app.blocks.find(b => b.id === parentBlockId);
+                if (parentBlock) {
+                    if (!parentBlock.children) parentBlock.children = [];
+                    parentBlock.children.push(newBlock.id);
+                    console.log('Padre tiene ahora', parentBlock.children.length, 'hijos');
+                }
+                
+                renderNestedBlock(newBlock, parentBlockId);
+            }
+        }
+
+        function renderNestedBlock(block, parentId) {
+            const container = document.getElementById(`children_${parentId}`);
+            if (!container) return;
+            
+            const blockEl = document.createElement('div');
+            blockEl.className = `nested-block block-${block.type}`;
+            blockEl.id = block.id;
+            const colors = {
+                'input': '#FF6680', 'output': '#FF6680', 'calculate': '#59C059',
+                'if': '#5CB1D6', 'else': '#5CB1D6', 'while': '#9C27B0', 'for': '#673AB7'
+            };
+            blockEl.style.background = colors[block.type] || '#999';
+            blockEl.style.color = 'white';
+            blockEl.style.padding = '8px 12px';
+            blockEl.style.borderRadius = '6px';
+            blockEl.style.fontSize = '12px';
+            blockEl.style.marginBottom = '5px';
+            blockEl.style.cursor = 'pointer';
+            
+            blockEl.onclick = (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.classList.contains('block-slot')) {
+                    return;
+                }
+                e.stopPropagation();
+                selectBlock(block.id);
+            };
+            
+            // Renderizar contenido editable
+            switch(block.type) {
+                case 'input':
+                    blockEl.innerHTML = `
+                        <div>📥 <strong>LEER</strong></div>
+                        <input class="block-input" placeholder="Mensaje..." 
+                               value="${block.data.message || ''}"
+                               oninput="updateBlockData('${block.id}', 'message', this.value)">
+                        <div>Guardar en: <span class="block-slot ${block.data.variable ? 'filled' : ''}"
+                            ondrop="dropVariable(event, '${block.id}', 'variable')"
+                            ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
+                            ondragleave="event.target.classList.remove('drop-target')">
+                            ${block.data.variable || 'variable'}
+                        </span></div>
+                    `;
+                    break;
+                case 'output':
+                    blockEl.innerHTML = `
+                        <div>📤 <strong>ESCRIBIR</strong></div>
+                        <input class="block-input" placeholder="Mensaje..." 
+                               value="${block.data.message || ''}"
+                               oninput="updateBlockData('${block.id}', 'message', this.value)">
+                        <div>Mostrar: <span class="block-slot ${block.data.variable ? 'filled' : ''}"
+                            ondrop="dropVariable(event, '${block.id}', 'variable')"
+                            ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
+                            ondragleave="event.target.classList.remove('drop-target')">
+                            ${block.data.variable || 'variable'}
+                        </span></div>
+                    `;
+                    break;
+                case 'calculate':
+                    blockEl.innerHTML = `
+                        <div>🧮 <strong>CALCULAR</strong></div>
+                        <span class="block-slot ${block.data.targetVar ? 'filled' : ''}"
+                            ondrop="dropVariable(event, '${block.id}', 'targetVar')"
+                            ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
+                            ondragleave="event.target.classList.remove('drop-target')">
+                            ${block.data.targetVar || 'var'}
+                        </span> = 
+                        <input class="block-input" style="width: 100px;" placeholder="expresión"
+                               value="${block.data.expression || ''}"
+                               oninput="updateBlockData('${block.id}', 'expression', this.value)">
+                    `;
+                    break;
+                default:
+                    blockEl.textContent = `${block.type}`;
+            }
+            
+            container.appendChild(blockEl);
+        }
+
+        function createVariable() {
+            const varName = prompt('Nombre de la variable:');
+            if (varName && varName.trim()) {
+                const cleanName = varName.trim().replace(/[^a-zA-Z0-9_]/g, '');
+                if (cleanName && !app.variableNames.includes(cleanName)) {
+                    app.variableNames.push(cleanName);
+                    renderVariablesList();
+                }
+            }
+        }
+
+        function renderVariablesList() {
+            const list = document.getElementById('variablesList');
+            list.innerHTML = app.variableNames.map(name => 
+                `<div class="variable-item" draggable="true" data-varname="${name}">${name}</div>`
+            ).join('');
+            
+            list.querySelectorAll('.variable-item').forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('varName', e.target.dataset.varname);
+                });
+            });
+        }
+
+        async function executeProgram() {
+            app.variables = {};
+            app.output = [];
+            
+            console.log('=== EJECUTANDO ===');
+            
+            const topBlocks = app.blocks.filter(b => !b.isNested).sort((a, b) => a.y - b.y);
+            console.log('Bloques principales:', topBlocks.length);
+            
+            for (const block of topBlocks) {
+                await executeBlock(block);
+            }
+            
+            showOutput();
+            showVariables();
+        }
+
+        async function executeBlock(block) {
+            const blockEl = document.getElementById(block.id);
+            if (blockEl) {
+                blockEl.classList.add('executing');
+                await new Promise(r => setTimeout(r, 500));
+            }
+            
+            console.log('Ejecutando:', block.type);
+
+            switch(block.type) {
+                case 'start':
+                    app.output.push('▶️ Iniciando programa...');
+                    break;
+                case 'end':
+                    app.output.push('✅ Programa finalizado');
+                    break;
+                case 'input':
+                    if (block.data.variable) {
+                        const msg = block.data.message || `Valor para ${block.data.variable}:`;
+                        const val = prompt(msg);
+                        app.variables[block.data.variable] = isNaN(val) ? val : parseFloat(val);
+                        app.output.push(`📥 LEER: ${block.data.variable} = ${app.variables[block.data.variable]}`);
+                        showVariables();
+                    }
+                    break;
+                case 'output':
+                    let txt = block.data.message || '';
+                    if (block.data.variable) {
+                        const val = app.variables[block.data.variable];
+                        txt += (txt ? ' ' : '') + (val !== undefined ? val : '[no definida]');
+                    }
+                    app.output.push(`📤 ESCRIBIR: ${txt}`);
+                    break;
+                case 'calculate':
+                    if (block.data.targetVar && block.data.expression) {
+                        try {
+                            const before = app.variables[block.data.targetVar];
+                            const result = evaluateExpression(block.data.expression);
+                            app.variables[block.data.targetVar] = result;
+                            if (before !== undefined) {
+                                app.output.push(`🧮 ${block.data.targetVar}: ${before} → ${result}`);
+                            } else {
+                                app.output.push(`🧮 ${block.data.targetVar} = ${result}`);
+                            }
+                            showVariables();
+                        } catch (e) {
+                            app.output.push(`❌ Error: ${e.message}`);
+                        }
+                    }
+                    break;
+                case 'if':
+                    if (block.data.condition) {
+                        try {
+                            const result = evaluateExpression(block.data.condition);
+                            app.output.push(`🔀 SI "${block.data.condition}" = ${result ? 'VERDADERO' : 'FALSO'}`);
+                            if (result && block.children && block.children.length > 0) {
+                                for (const childId of block.children) {
+                                    const child = app.blocks.find(b => b.id === childId);
+                                    if (child) await executeBlock(child);
+                                }
+                            }
+                        } catch (e) {
+                            app.output.push(`❌ Error: ${e.message}`);
+                        }
+                    }
+                    break;
+                case 'for':
+                    console.log('=== EJECUTANDO FOR ===');
+                    console.log('block.data:', block.data);
+                    console.log('variable:', block.data.variable);
+                    console.log('start:', block.data.start);
+                    console.log('end:', block.data.end);
+                    console.log('children:', block.children);
+                    
+                    const varName = block.data.variable;
+                    const start = block.data.start ? parseInt(block.data.start) : 1;
+                    const end = block.data.end ? parseInt(block.data.end) : 10;
+                    
+                    if (!varName) {
+                        app.output.push(`⚠️ PARA: Falta asignar la variable de control`);
+                        console.log('ERROR: No hay variable asignada');
+                        break;
+                    }
+                    
+                    // Buscar el bloque actualizado con sus hijos
+                    const currentBlock = app.blocks.find(b => b.id === block.id);
+                    const childrenIds = currentBlock && currentBlock.children ? currentBlock.children : [];
+                    
+                    console.log(`FOR configurado: ${varName} de ${start} a ${end}`);
+                    console.log(`Hijos en currentBlock:`, childrenIds);
+                    console.log(`Total de bloques en app:`, app.blocks.length);
+                    
+                    app.output.push(`🔂 PARA: ${varName} de ${start} a ${end}`);
+                    
+                    for (let i = start; i <= end; i++) {
+                        app.variables[varName] = i;
+                        app.output.push(`   📍 ${varName} = ${i}`);
+                        showVariables();
+                        
+                        if (childrenIds.length > 0) {
+                            console.log(`Iteración ${i}: Ejecutando ${childrenIds.length} hijos`);
+                            for (const childId of childrenIds) {
+                                const child = app.blocks.find(b => b.id === childId);
+                                console.log(`Buscando ${childId}:`, child ? `✓ ${child.type}` : '✗ NO ENCONTRADO');
+                                if (child) {
+                                    await executeBlock(child);
+                                }
+                            }
+                        } else {
+                            app.output.push(`   ⚠️ Sin instrucciones`);
+                            console.log('Sin hijos que ejecutar');
+                        }
+                        showOutput();
+                    }
+                    app.output.push(`✓ Ciclo completado`);
+                    break;
+                case 'while':
+                    if (block.data.condition) {
+                        app.output.push(`🔁 MIENTRAS: "${block.data.condition}"`);
+                        let iter = 0;
+                        const max = 100;
+                        
+                        try {
+                            let cond = evaluateExpression(block.data.condition);
+                            while (cond && iter < max) {
+                                iter++;
+                                app.output.push(`   📍 Iteración ${iter}`);
+                                
+                                if (block.children && block.children.length > 0) {
+                                    for (const childId of block.children) {
+                                        const child = app.blocks.find(b => b.id === childId);
+                                        if (child) await executeBlock(child);
+                                    }
+                                }
+                                
+                                cond = evaluateExpression(block.data.condition);
+                                showOutput();
+                            }
+                            
+                            if (iter >= max) {
+                                app.output.push(`⚠️ Detenido: ${max} iteraciones`);
+                            } else {
+                                app.output.push(`✓ Ciclo completado: ${iter} iteraciones`);
+                            }
+                        } catch (e) {
+                            app.output.push(`❌ Error: ${e.message}`);
+                        }
+                    }
+                    break;
+            }
+
+            if (blockEl) {
+                blockEl.classList.remove('executing');
+            }
+            showOutput();
+        }
+
+        function evaluateExpression(expr) {
+            let sanitized = expr;
+            for (let varName in app.variables) {
+                const regex = new RegExp('\\b' + varName + '\\b', 'g');
+                sanitized = sanitized.replace(regex, app.variables[varName]);
+            }
+            return Function('"use strict"; return (' + sanitized + ')')();
+        }
+
+        function showOutput() {
+            const outputArea = document.getElementById('outputArea');
+            outputArea.innerHTML = app.output.map(line => {
+                if (line.includes('▶️') || line.includes('✅')) return `<div style="color: #2196F3; font-weight: bold;">${line}</div>`;
+                if (line.includes('📥') || line.includes('🧮')) return `<div style="color: #4CAF50;">${line}</div>`;
+                if (line.includes('📤')) return `<div style="color: #FF6680; font-weight: bold;">${line}</div>`;
+                if (line.includes('🔀') || line.includes('🔁') || line.includes('🔂')) return `<div style="color: #9C27B0; font-weight: bold;">${line}</div>`;
+                if (line.includes('   ')) return `<div style="color: #666; margin-left: 20px; font-size: 11px;">${line}</div>`;
+                if (line.includes('❌')) return `<div style="color: #f44336; font-weight: bold;">${line}</div>`;
+                return `<div>${line}</div>`;
+            }).join('') || '<div style="color: #999;">Programa ejecutado</div>';
+            
+            outputArea.scrollTop = outputArea.scrollHeight;
+        }
+
+        function showVariables() {
+            const display = document.getElementById('variablesDisplay');
+            if (Object.keys(app.variables).length === 0) {
+                display.innerHTML = '<p style="color: #666; font-size: 11px;">No hay variables definidas</p>';
+                return;
+            }
+            
+            display.innerHTML = Object.entries(app.variables).map(([name, value]) => 
+                `<div class="variable-value-item">
+                    <span class="var-name">${name}</span>
+                    <span class="var-value">${value}</span>
+                </div>`
+            ).join('');
+        }
+
+        function resetExecution() {
+            app.variables = {};
+            app.output = [];
+            document.querySelectorAll('.workspace-block').forEach(block => {
+                block.classList.remove('executing');
+            });
+            document.getElementById('outputArea').textContent = 'El resultado aparecerá aquí...';
+            document.getElementById('variablesDisplay').innerHTML = '<p style="color: #666; font-size: 11px;">Las variables aparecerán durante la ejecución...</p>';
+        }
+
+        function clearWorkspace() {
+            if (confirm('¿Eliminar todos los bloques?')) {
+                app.blocks = [];
+                document.getElementById('workspaceContent').innerHTML = '<p style="color: #999; text-align: center; margin-top: 100px;" id="emptyMessage">Arrastra bloques aquí para construir tu programa</p>';
+                resetExecution();
+                deselectAll();
+            }
+        }
+
+        // Iniciar cuando cargue la página
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
