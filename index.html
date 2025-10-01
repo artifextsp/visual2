@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intérprete de Pseudocódigo por Bloques</title>
+    <title>Intérprete de Pseudocódigo - Bloques y Texto</title>
     <style>
         * {
             margin: 0;
@@ -39,6 +39,30 @@
         .header h1 {
             font-size: 2em;
             margin-bottom: 5px;
+        }
+
+        .mode-switcher {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .mode-btn {
+            padding: 10px 30px;
+            border: 2px solid white;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn.active {
+            background: white;
+            color: #2196F3;
         }
 
         .main-content {
@@ -79,6 +103,10 @@
             background-image: 
                 radial-gradient(circle, #ddd 1px, transparent 1px);
             background-size: 20px 20px;
+        }
+        
+        .workspace.hidden {
+            display: none;
         }
         
         .workspace-content {
@@ -131,6 +159,65 @@
             font-size: 13px;
             font-weight: bold;
             color: #2196F3;
+        }
+
+        .text-editor-panel {
+            flex: 1;
+            background: #f0f0f0;
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .text-editor-panel.active {
+            display: flex;
+        }
+        
+        .code-editor {
+            width: 100%;
+            min-height: 400px;
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 3px solid #2196F3;
+            border-radius: 8px;
+            background: white;
+            resize: vertical;
+            line-height: 1.8;
+        }
+        
+        .code-editor:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .syntax-help {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.8;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .syntax-help h4 {
+            margin: 0 0 15px 0;
+            color: #1976D2;
+            font-size: 15px;
+        }
+        
+        .syntax-example {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+            color: #333;
+            border-left: 4px solid #2196F3;
         }
 
         .controls-panel {
@@ -427,8 +514,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧩 Intérprete de Pseudocódigo por Bloques</h1>
-            <p>Sistema de programación visual estilo Scratch</p>
+            <h1>🧩 Intérprete de Pseudocódigo</h1>
+            <p>Programa con bloques visuales o código de texto</p>
+            <div class="mode-switcher">
+                <button class="mode-btn active" id="btnModeBlocks">🧩 Modo Bloques</button>
+                <button class="mode-btn" id="btnModeText">📝 Modo Texto</button>
+            </div>
         </div>
 
         <div class="main-content">
@@ -484,7 +575,6 @@
                         <div style="margin-bottom: 6px;"><strong>abs(n)</strong> → Valor absoluto</div>
                         <div><strong>floor(n)</strong> → Redondear abajo</div>
                     </div>
-                    <p style="font-size: 10px; color: #666; margin-top: 8px;">Ejemplo: <code>sqrt(a*a + b*b)</code></p>
                 </div>
                 
                 <div class="panel-section">
@@ -507,6 +597,43 @@
                 <div class="workspace-content" id="workspaceContent">
                     <p style="color: #999; text-align: center; margin-top: 100px;" id="emptyMessage">
                         Arrastra bloques aquí para construir tu programa
+                    </p>
+                </div>
+            </div>
+            
+            <div class="text-editor-panel" id="textEditorPanel">
+                <h3 style="margin: 0 0 15px 0; color: #1976D2;">✍️ Editor de Pseudocódigo</h3>
+                <textarea class="code-editor" id="codeEditor" placeholder="Escribe tu pseudocódigo aquí...
+
+Ejemplo:
+INICIO
+    LEER numero1 'Ingrese el primer número'
+    LEER numero2 'Ingrese el segundo número'
+    CALCULAR suma = numero1 + numero2
+    ESCRIBIR 'La suma es:' suma
+FIN"></textarea>
+                
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button id="btnTextToBlocks" style="flex: 1; background: linear-gradient(45deg, #4CAF50, #45a049); color: white;">
+                        🧩 Convertir a Bloques
+                    </button>
+                    <button id="btnExecuteText" style="flex: 1; background: linear-gradient(45deg, #2196F3, #1976D2); color: white;">
+                        ▶️ Ejecutar Código
+                    </button>
+                </div>
+                
+                <div class="syntax-help">
+                    <h4>📖 Sintaxis del Pseudocódigo</h4>
+                    <div class="syntax-example">INICIO<br>...<br>FIN</div>
+                    <div class="syntax-example">LEER variable 'mensaje opcional'</div>
+                    <div class="syntax-example">ESCRIBIR 'mensaje' variable</div>
+                    <div class="syntax-example">CALCULAR variable = expresión</div>
+                    <div class="syntax-example">SI condición ENTONCES<br>    instrucciones<br>FIN_SI</div>
+                    <div class="syntax-example">SINO<br>    instrucciones<br>FIN_SINO</div>
+                    <div class="syntax-example">MIENTRAS condición HACER<br>    instrucciones<br>FIN_MIENTRAS</div>
+                    <div class="syntax-example">PARA variable DESDE inicio HASTA fin<br>    instrucciones<br>FIN_PARA</div>
+                    <p style="margin-top: 15px; color: #666; background: #fff3cd; padding: 10px; border-radius: 4px;">
+                        <strong>💡 Tip:</strong> Usa espacios o tabulaciones para indentar bloques anidados. Las expresiones pueden incluir: +, -, *, /, %, sqrt(), pow(), abs(), etc.
                     </p>
                 </div>
             </div>
@@ -547,10 +674,10 @@
             variableNames: [],
             blockCounter: 0,
             selectedBlockId: null,
-            zoomLevel: 1
+            zoomLevel: 1,
+            currentMode: 'blocks'
         };
 
-        // Inicializar
         function init() {
             setupEventListeners();
             
@@ -560,15 +687,332 @@
             document.getElementById('btnClear').onclick = clearWorkspace;
             document.getElementById('btnDelete').onclick = deleteSelectedBlock;
             
-            // Controles de zoom
             document.getElementById('btnZoomIn').onclick = zoomIn;
             document.getElementById('btnZoomOut').onclick = zoomOut;
             document.getElementById('btnZoomReset').onclick = zoomReset;
             
-            // Controles de archivo
             document.getElementById('btnSave').onclick = saveAlgorithm;
             document.getElementById('btnLoad').onclick = () => document.getElementById('fileInput').click();
             document.getElementById('fileInput').onchange = loadAlgorithm;
+            
+            document.getElementById('btnModeBlocks').onclick = () => switchMode('blocks');
+            document.getElementById('btnModeText').onclick = () => switchMode('text');
+            document.getElementById('btnTextToBlocks').onclick = convertTextToBlocks;
+            document.getElementById('btnExecuteText').onclick = executeTextCode;
+        }
+        
+        function switchMode(mode) {
+            app.currentMode = mode;
+            
+            const workspace = document.getElementById('workspace');
+            const textPanel = document.getElementById('textEditorPanel');
+            const btnBlocks = document.getElementById('btnModeBlocks');
+            const btnText = document.getElementById('btnModeText');
+            
+            if (mode === 'blocks') {
+                workspace.classList.remove('hidden');
+                textPanel.classList.remove('active');
+                btnBlocks.classList.add('active');
+                btnText.classList.remove('active');
+            } else {
+                workspace.classList.add('hidden');
+                textPanel.classList.add('active');
+                btnBlocks.classList.remove('active');
+                btnText.classList.add('active');
+                convertBlocksToText();
+            }
+        }
+        
+        function convertBlocksToText() {
+            const topBlocks = app.blocks.filter(b => !b.isNested).sort((a, b) => a.y - b.y);
+            let code = '';
+            
+            for (const block of topBlocks) {
+                code += blockToText(block, 0);
+            }
+            
+            document.getElementById('codeEditor').value = code || '// Arrastra bloques en modo Bloques o escribe código aquí';
+        }
+        
+        function blockToText(block, indent = 0) {
+            const spaces = '    '.repeat(indent);
+            let text = '';
+            
+            switch(block.type) {
+                case 'start':
+                    text = spaces + 'INICIO\n';
+                    break;
+                case 'end':
+                    text = spaces + 'FIN\n';
+                    break;
+                case 'input':
+                    const inputMsg = block.data.message ? ` '${block.data.message}'` : '';
+                    text = spaces + `LEER ${block.data.variable || 'variable'}${inputMsg}\n`;
+                    break;
+                case 'output':
+                    const outputMsg = block.data.message ? `'${block.data.message}' ` : '';
+                    const outputVar = block.data.variable || '';
+                    text = spaces + `ESCRIBIR ${outputMsg}${outputVar}\n`;
+                    break;
+                case 'calculate':
+                    text = spaces + `CALCULAR ${block.data.targetVar || 'variable'} = ${block.data.expression || ''}\n`;
+                    break;
+                case 'if':
+                    text = spaces + `SI ${block.data.condition || 'condición'} ENTONCES\n`;
+                    if (block.children && block.children.length > 0) {
+                        for (const childId of block.children) {
+                            const child = app.blocks.find(b => b.id === childId);
+                            if (child) text += blockToText(child, indent + 1);
+                        }
+                    }
+                    text += spaces + 'FIN_SI\n';
+                    break;
+                case 'else':
+                    text = spaces + 'SINO\n';
+                    if (block.children && block.children.length > 0) {
+                        for (const childId of block.children) {
+                            const child = app.blocks.find(b => b.id === childId);
+                            if (child) text += blockToText(child, indent + 1);
+                        }
+                    }
+                    text += spaces + 'FIN_SINO\n';
+                    break;
+                case 'while':
+                    text = spaces + `MIENTRAS ${block.data.condition || 'condición'} HACER\n`;
+                    if (block.children && block.children.length > 0) {
+                        for (const childId of block.children) {
+                            const child = app.blocks.find(b => b.id === childId);
+                            if (child) text += blockToText(child, indent + 1);
+                        }
+                    }
+                    text += spaces + 'FIN_MIENTRAS\n';
+                    break;
+                case 'for':
+                    text = spaces + `PARA ${block.data.variable || 'i'} DESDE ${block.data.start || '1'} HASTA ${block.data.end || '10'}\n`;
+                    if (block.children && block.children.length > 0) {
+                        for (const childId of block.children) {
+                            const child = app.blocks.find(b => b.id === childId);
+                            if (child) text += blockToText(child, indent + 1);
+                        }
+                    }
+                    text += spaces + 'FIN_PARA\n';
+                    break;
+            }
+            
+            return text;
+        }
+        
+        function convertTextToBlocks() {
+            const code = document.getElementById('codeEditor').value;
+            
+            if (!code.trim() || code.trim().startsWith('//')) {
+                alert('⚠️ Escribe código antes de convertir');
+                return;
+            }
+            
+            try {
+                app.blocks = [];
+                document.getElementById('workspaceContent').innerHTML = '<p style="color: #999; text-align: center; margin-top: 100px;" id="emptyMessage">Arrastra bloques aquí para construir tu programa</p>';
+                
+                parseCodeToBlocks(code);
+                switchMode('blocks');
+                
+                alert('✓ Código convertido a bloques exitosamente');
+            } catch (e) {
+                alert('❌ Error al parsear el código:\n' + e.message);
+                console.error('Error de parseo:', e);
+            }
+        }
+        
+        function executeTextCode() {
+            const code = document.getElementById('codeEditor').value;
+            if (!code.trim()) {
+                alert('⚠️ Escribe código antes de ejecutar');
+                return;
+            }
+            
+            try {
+                const tempBlocks = app.blocks;
+                app.blocks = [];
+                parseCodeToBlocks(code);
+                executeProgram();
+                app.blocks = tempBlocks;
+            } catch (e) {
+                alert('❌ Error:\n' + e.message);
+            }
+        }
+        
+        function parseCodeToBlocks(code) {
+            const lines = code.split('\n').map(line => line.trimEnd());
+            let currentY = 50;
+            const blockStack = [];
+            
+            const varPattern = /\b([a-zA-Z_][a-zA-Z0-9_]*)\b/g;
+            const foundVars = new Set();
+            lines.forEach(line => {
+                if (line.includes('LEER') || line.includes('CALCULAR') || line.includes('PARA')) {
+                    const matches = line.matchAll(varPattern);
+                    for (const match of matches) {
+                        if (!['LEER', 'CALCULAR', 'PARA', 'DESDE', 'HASTA', 'SI', 'ENTONCES', 'MIENTRAS', 'HACER', 'ESCRIBIR', 'INICIO', 'FIN'].includes(match[1])) {
+                            foundVars.add(match[1]);
+                        }
+                    }
+                }
+            });
+            
+            foundVars.forEach(varName => {
+                if (!app.variableNames.includes(varName)) {
+                    app.variableNames.push(varName);
+                }
+            });
+            renderVariablesList();
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmed = line.trim();
+                
+                if (!trimmed || trimmed.startsWith('//')) continue;
+                
+                const isTopLevel = blockStack.length === 0;
+                let parentBlock = blockStack.length > 0 ? blockStack[blockStack.length - 1] : null;
+                
+                if (trimmed === 'INICIO') {
+                    if (isTopLevel) {
+                        createBlockFromText('start', 50, currentY);
+                        currentY += 80;
+                    }
+                } else if (trimmed === 'FIN') {
+                    if (isTopLevel) {
+                        createBlockFromText('end', 50, currentY);
+                        currentY += 80;
+                    }
+                } else if (trimmed.startsWith('LEER')) {
+                    const match = trimmed.match(/LEER\s+(\w+)(?:\s+'([^']*)')?/);
+                    if (match) {
+                        const blockData = { variable: match[1], message: match[2] || '' };
+                        if (isTopLevel) {
+                            createBlockFromText('input', 50, currentY, blockData);
+                            currentY += 100;
+                        } else if (parentBlock) {
+                            createNestedBlockFromText('input', parentBlock, blockData);
+                        }
+                    }
+                } else if (trimmed.startsWith('ESCRIBIR')) {
+                    const match = trimmed.match(/ESCRIBIR\s+(?:'([^']*)')?(?:\s+)?(\w+)?/);
+                    if (match) {
+                        const blockData = { message: match[1] || '', variable: match[2] || '' };
+                        if (isTopLevel) {
+                            createBlockFromText('output', 50, currentY, blockData);
+                            currentY += 100;
+                        } else if (parentBlock) {
+                            createNestedBlockFromText('output', parentBlock, blockData);
+                        }
+                    }
+                } else if (trimmed.startsWith('CALCULAR')) {
+                    const match = trimmed.match(/CALCULAR\s+(\w+)\s*=\s*(.+)/);
+                    if (match) {
+                        const blockData = { targetVar: match[1], expression: match[2].trim() };
+                        if (isTopLevel) {
+                            createBlockFromText('calculate', 50, currentY, blockData);
+                            currentY += 90;
+                        } else if (parentBlock) {
+                            createNestedBlockFromText('calculate', parentBlock, blockData);
+                        }
+                    }
+                } else if (trimmed.startsWith('SI')) {
+                    const match = trimmed.match(/SI\s+(.+?)\s+ENTONCES/);
+                    if (match) {
+                        const blockData = { condition: match[1] };
+                        let newBlock;
+                        if (isTopLevel) {
+                            newBlock = createBlockFromText('if', 50, currentY, blockData);
+                            currentY += 200;
+                        } else if (parentBlock) {
+                            newBlock = createNestedBlockFromText('if', parentBlock, blockData);
+                        }
+                        if (newBlock) blockStack.push(newBlock);
+                    }
+                } else if (trimmed === 'FIN_SI') {
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'if') {
+                        blockStack.pop();
+                    }
+                } else if (trimmed === 'SINO') {
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'if') {
+                        blockStack.pop();
+                    }
+                    const blockData = {};
+                    let newBlock;
+                    const actualParent = blockStack.length > 0 ? blockStack[blockStack.length - 1] : null;
+                    if (actualParent) {
+                        newBlock = createNestedBlockFromText('else', actualParent, blockData);
+                    } else {
+                        newBlock = createBlockFromText('else', 50, currentY, blockData);
+                        currentY += 200;
+                    }
+                    if (newBlock) blockStack.push(newBlock);
+                } else if (trimmed === 'FIN_SINO') {
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'else') {
+                        blockStack.pop();
+                    }
+                } else if (trimmed.startsWith('MIENTRAS')) {
+                    const match = trimmed.match(/MIENTRAS\s+(.+?)\s+HACER/);
+                    if (match) {
+                        const blockData = { condition: match[1] };
+                        let newBlock;
+                        if (isTopLevel) {
+                            newBlock = createBlockFromText('while', 50, currentY, blockData);
+                            currentY += 200;
+                        } else if (parentBlock) {
+                            newBlock = createNestedBlockFromText('while', parentBlock, blockData);
+                        }
+                        if (newBlock) blockStack.push(newBlock);
+                    }
+                } else if (trimmed === 'FIN_MIENTRAS') {
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'while') {
+                        blockStack.pop();
+                    }
+                } else if (trimmed.startsWith('PARA')) {
+                    const match = trimmed.match(/PARA\s+(\w+)\s+DESDE\s+(.+?)\s+HASTA\s+(.+)/);
+                    if (match) {
+                        const blockData = { variable: match[1], start: match[2].trim(), end: match[3].trim() };
+                        let newBlock;
+                        if (isTopLevel) {
+                            newBlock = createBlockFromText('for', 50, currentY, blockData);
+                            currentY += 200;
+                        } else if (parentBlock) {
+                            newBlock = createNestedBlockFromText('for', parentBlock, blockData);
+                        }
+                        if (newBlock) blockStack.push(newBlock);
+                    }
+                } else if (trimmed === 'FIN_PARA') {
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'for') {
+                        blockStack.pop();
+                    }
+                }
+            }
+            
+            const emptyMsg = document.getElementById('emptyMessage');
+            if (emptyMsg && app.blocks.length > 0) {
+                emptyMsg.style.display = 'none';
+            }
+        }
+        
+        function createBlockFromText(type, x, y, data = {}) {
+            const blockId = `block_${app.blockCounter++}`;
+            const block = { id: blockId, type: type, x: x, y: y, data: data, children: [] };
+            app.blocks.push(block);
+            renderBlock(block);
+            return block;
+        }
+        
+        function createNestedBlockFromText(type, parentBlock, data = {}) {
+            const blockId = `block_${app.blockCounter++}`;
+            const block = { id: blockId, type: type, data: data, parent: parentBlock.id, isNested: true, children: [] };
+            app.blocks.push(block);
+            if (!parentBlock.children) parentBlock.children = [];
+            parentBlock.children.push(blockId);
+            renderNestedBlock(block, parentBlock.id);
+            return block;
         }
         
         function zoomIn() {
@@ -589,12 +1033,8 @@
         function applyZoom() {
             const workspaceContent = document.getElementById('workspaceContent');
             workspaceContent.style.transform = `scale(${app.zoomLevel})`;
-            
-            // Ajustar el tamaño mínimo según el zoom
             const baseHeight = 3000;
             workspaceContent.style.minHeight = `${baseHeight * app.zoomLevel}px`;
-            
-            // Actualizar display del zoom
             const zoomPercent = Math.round(app.zoomLevel * 100);
             document.getElementById('zoomLevel').textContent = `${zoomPercent}%`;
         }
@@ -644,18 +1084,9 @@
 
         function createBlock(type, x, y) {
             const blockId = `block_${app.blockCounter++}`;
-            const block = {
-                id: blockId,
-                type: type,
-                x: x,
-                y: y,
-                data: {},
-                children: []
-            };
-
+            const block = { id: blockId, type: type, x: x, y: y, data: {}, children: [] };
             app.blocks.push(block);
             renderBlock(block);
-            console.log('Bloque creado:', type, blockId);
         }
 
         function renderBlock(block) {
@@ -895,7 +1326,6 @@
                 infoEl.innerHTML = `<strong>✓ Seleccionado:</strong><br>${typeNames[block.type] || block.type}`;
                 infoEl.classList.add('active');
             }
-            console.log('Bloque seleccionado:', blockId);
         }
 
         function deselectAll() {
@@ -922,7 +1352,6 @@
                 if (blockEl) blockEl.remove();
                 
                 app.blocks.splice(blockIndex, 1);
-                console.log('Bloque eliminado');
                 
                 const infoEl = document.getElementById('selectedBlockInfo');
                 if (infoEl) {
@@ -941,7 +1370,6 @@
             const block = app.blocks.find(b => b.id === blockId);
             if (block) {
                 block.data[key] = value;
-                console.log(`${blockId}.${key} = ${value}`);
             }
         }
 
@@ -957,7 +1385,6 @@
                     block.data[slotName] = varName;
                     event.target.textContent = varName;
                     event.target.classList.add('filled');
-                    console.log(`Variable ${varName} asignada a ${slotName}`);
                 }
             }
         }
@@ -970,8 +1397,6 @@
             const blockType = event.dataTransfer.getData('blockType');
             const fromPalette = event.dataTransfer.getData('fromPalette');
             
-            console.log('Drop en contenedor:', parentBlockId, 'Tipo:', blockType);
-            
             if (fromPalette && blockType) {
                 const newBlock = {
                     id: `block_${app.blockCounter++}`,
@@ -982,14 +1407,12 @@
                     children: []
                 };
                 
-                console.log('Creando bloque anidado:', newBlock.id);
                 app.blocks.push(newBlock);
                 
                 const parentBlock = app.blocks.find(b => b.id === parentBlockId);
                 if (parentBlock) {
                     if (!parentBlock.children) parentBlock.children = [];
                     parentBlock.children.push(newBlock.id);
-                    console.log('Padre tiene ahora', parentBlock.children.length, 'hijos');
                 }
                 
                 renderNestedBlock(newBlock, parentBlockId);
@@ -1023,7 +1446,6 @@
                 selectBlock(block.id);
             };
             
-            // Renderizar contenido editable
             switch(block.type) {
                 case 'input':
                     blockEl.innerHTML = `
@@ -1102,10 +1524,7 @@
             app.variables = {};
             app.output = [];
             
-            console.log('=== EJECUTANDO ===');
-            
             const topBlocks = app.blocks.filter(b => !b.isNested).sort((a, b) => a.y - b.y);
-            console.log('Bloques principales:', topBlocks.length);
             
             for (const block of topBlocks) {
                 await executeBlock(block);
@@ -1121,8 +1540,6 @@
                 blockEl.classList.add('executing');
                 await new Promise(r => setTimeout(r, 500));
             }
-            
-            console.log('Ejecutando:', block.type);
 
             switch(block.type) {
                 case 'start':
@@ -1182,30 +1599,17 @@
                     }
                     break;
                 case 'for':
-                    console.log('=== EJECUTANDO FOR ===');
-                    console.log('block.data:', block.data);
-                    console.log('variable:', block.data.variable);
-                    console.log('start:', block.data.start);
-                    console.log('end:', block.data.end);
-                    console.log('children:', block.children);
-                    
                     const varName = block.data.variable;
                     const start = block.data.start ? parseInt(block.data.start) : 1;
                     const end = block.data.end ? parseInt(block.data.end) : 10;
                     
                     if (!varName) {
                         app.output.push(`⚠️ PARA: Falta asignar la variable de control`);
-                        console.log('ERROR: No hay variable asignada');
                         break;
                     }
                     
-                    // Buscar el bloque actualizado con sus hijos
                     const currentBlock = app.blocks.find(b => b.id === block.id);
                     const childrenIds = currentBlock && currentBlock.children ? currentBlock.children : [];
-                    
-                    console.log(`FOR configurado: ${varName} de ${start} a ${end}`);
-                    console.log(`Hijos en currentBlock:`, childrenIds);
-                    console.log(`Total de bloques en app:`, app.blocks.length);
                     
                     app.output.push(`🔂 PARA: ${varName} de ${start} a ${end}`);
                     
@@ -1215,17 +1619,14 @@
                         showVariables();
                         
                         if (childrenIds.length > 0) {
-                            console.log(`Iteración ${i}: Ejecutando ${childrenIds.length} hijos`);
                             for (const childId of childrenIds) {
                                 const child = app.blocks.find(b => b.id === childId);
-                                console.log(`Buscando ${childId}:`, child ? `✓ ${child.type}` : '✗ NO ENCONTRADO');
                                 if (child) {
                                     await executeBlock(child);
                                 }
                             }
                         } else {
                             app.output.push(`   ⚠️ Sin instrucciones`);
-                            console.log('Sin hijos que ejecutar');
                         }
                         showOutput();
                     }
@@ -1275,13 +1676,11 @@
         function evaluateExpression(expr) {
             let sanitized = expr;
             
-            // Reemplazar variables con sus valores
             for (let varName in app.variables) {
                 const regex = new RegExp('\\b' + varName + '\\b', 'g');
                 sanitized = sanitized.replace(regex, app.variables[varName]);
             }
             
-            // Crear un contexto seguro con funciones matemáticas
             const mathFunctions = {
                 sqrt: Math.sqrt,
                 pow: Math.pow,
@@ -1298,7 +1697,6 @@
                 max: Math.max
             };
             
-            // Crear función con contexto matemático
             const funcBody = `
                 with (mathContext) {
                     return (${sanitized});
@@ -1309,7 +1707,6 @@
                 const func = new Function('mathContext', funcBody);
                 return func(mathFunctions);
             } catch (e) {
-                console.error('Error evaluando expresión:', expr, e);
                 throw new Error('Expresión inválida: ' + expr);
             }
         }
@@ -1360,15 +1757,15 @@
                 app.variableNames = [];
                 document.getElementById('workspaceContent').innerHTML = '<p style="color: #999; text-align: center; margin-top: 100px;" id="emptyMessage">Arrastra bloques aquí para construir tu programa</p>';
                 document.getElementById('variablesList').innerHTML = '';
+                document.getElementById('codeEditor').value = '';
                 resetExecution();
                 deselectAll();
-                console.log('Workspace limpiado completamente');
             }
         }
         
         function saveAlgorithm() {
             const data = {
-                version: '1.0',
+                version: '2.0',
                 timestamp: new Date().toISOString(),
                 zoomLevel: app.zoomLevel,
                 variableNames: app.variableNames,
@@ -1396,7 +1793,6 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            console.log('Algoritmo guardado:', data.blocks.length, 'bloques');
             alert('✓ Algoritmo guardado correctamente');
         }
         
@@ -1409,28 +1805,23 @@
                 try {
                     const data = JSON.parse(e.target.result);
                     
-                    // Validar formato
                     if (!data.blocks || !Array.isArray(data.blocks)) {
                         alert('❌ Archivo no válido');
                         return;
                     }
                     
-                    // Limpiar workspace actual
                     app.blocks = [];
                     app.variableNames = data.variableNames || [];
                     app.blockCounter = 0;
                     document.getElementById('workspaceContent').innerHTML = '<p style="color: #999; text-align: center; margin-top: 100px;" id="emptyMessage">Arrastra bloques aquí para construir tu programa</p>';
                     
-                    // Restaurar zoom
                     if (data.zoomLevel) {
                         app.zoomLevel = data.zoomLevel;
                         applyZoom();
                     }
                     
-                    // Renderizar variables
                     renderVariablesList();
                     
-                    // Cargar bloques (primero los no anidados, luego los anidados)
                     const blocksToLoad = data.blocks.sort((a, b) => {
                         if (a.isNested && !b.isNested) return 1;
                         if (!a.isNested && b.isNested) return -1;
@@ -1451,14 +1842,12 @@
                         
                         app.blocks.push(block);
                         
-                        // Renderizar según si es anidado o no
                         if (block.isNested && block.parent) {
                             renderNestedBlock(block, block.parent);
                         } else {
                             renderBlock(block);
                         }
                         
-                        // Actualizar contador
                         const blockNum = parseInt(block.id.replace('block_', ''));
                         if (!isNaN(blockNum) && blockNum >= app.blockCounter) {
                             app.blockCounter = blockNum + 1;
@@ -1471,22 +1860,17 @@
                     }
                     
                     resetExecution();
-                    console.log('Algoritmo cargado:', app.blocks.length, 'bloques');
                     alert('✓ Algoritmo cargado correctamente');
                     
                 } catch (error) {
-                    console.error('Error al cargar:', error);
                     alert('❌ Error al cargar el archivo: ' + error.message);
                 }
             };
             
             reader.readAsText(file);
-            
-            // Resetear el input para permitir cargar el mismo archivo otra vez
             event.target.value = '';
         }
 
-        // Iniciar cuando cargue la página
         window.addEventListener('load', init);
     </script>
 </body>
