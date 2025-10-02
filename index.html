@@ -5,19 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intérprete de Pseudocódigo - Bloques y Texto</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 10px;
         }
-
         .container {
             width: 100vw;
             background: white;
@@ -28,26 +22,31 @@
             display: flex;
             flex-direction: column;
         }
-
         .header {
             background: linear-gradient(45deg, #4CAF50, #2196F3);
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
         }
-
-        .header h1 {
-            font-size: 2em;
-            margin-bottom: 5px;
+        .header h1 { font-size: 2em; margin-bottom: 5px; }
+        .credits {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
         }
-
         .mode-switcher {
             display: flex;
             gap: 10px;
             justify-content: center;
             margin-top: 15px;
         }
-        
         .mode-btn {
             padding: 10px 30px;
             border: 2px solid white;
@@ -59,18 +58,15 @@
             font-weight: bold;
             transition: all 0.3s;
         }
-        
         .mode-btn.active {
             background: white;
             color: #2196F3;
         }
-
         .main-content {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
-
         .blocks-panel {
             width: 280px;
             background: #f8f9fa;
@@ -79,11 +75,7 @@
             overflow-y: auto;
             flex-shrink: 0;
         }
-
-        .panel-section {
-            margin-bottom: 25px;
-        }
-
+        .panel-section { margin-bottom: 25px; }
         .panel-title {
             font-size: 14px;
             font-weight: bold;
@@ -92,7 +84,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         .workspace {
             flex: 1;
             background: #f0f0f0;
@@ -100,15 +91,10 @@
             overflow-y: scroll;
             overflow-x: auto;
             padding: 20px;
-            background-image: 
-                radial-gradient(circle, #ddd 1px, transparent 1px);
+            background-image: radial-gradient(circle, #ddd 1px, transparent 1px);
             background-size: 20px 20px;
         }
-        
-        .workspace.hidden {
-            display: none;
-        }
-        
+        .workspace.hidden { display: none; }
         .workspace-content {
             min-height: 3000px;
             position: relative;
@@ -116,7 +102,6 @@
             transform-origin: top left;
             transition: transform 0.2s ease;
         }
-        
         .zoom-controls {
             position: absolute;
             top: 10px;
@@ -129,7 +114,6 @@
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
-        
         .zoom-btn {
             width: 36px;
             height: 36px;
@@ -145,13 +129,11 @@
             justify-content: center;
             transition: all 0.2s;
         }
-        
         .zoom-btn:hover {
             background: #2196F3;
             color: white;
             transform: scale(1.1);
         }
-        
         .zoom-level {
             padding: 0 12px;
             display: flex;
@@ -160,66 +142,186 @@
             font-weight: bold;
             color: #2196F3;
         }
-
         .text-editor-panel {
             flex: 1;
-            background: #f0f0f0;
+            background: #1e1e1e;
             padding: 20px;
-            overflow-y: auto;
+            overflow: hidden;
             display: none;
             flex-direction: column;
+            position: relative;
         }
-        
-        .text-editor-panel.active {
+        .text-editor-panel.active { display: flex; }
+        .editor-header {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
         }
-        
-        .code-editor {
-            width: 100%;
-            min-height: 400px;
+        .editor-header h3 { margin: 0; color: #4CAF50; }
+        .editor-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .examples-selector {
+            background: #2d2d2d;
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .examples-selector:hover {
+            background: #3d3d3d;
+            border-color: #66BB6A;
+        }
+        .editor-zoom-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            background: #2d2d2d;
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+        .editor-zoom-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #4CAF50;
+            background: #1e1e1e;
+            color: #4CAF50;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .editor-zoom-btn:hover {
+            background: #4CAF50;
+            color: #1e1e1e;
+        }
+        .editor-zoom-level {
+            color: #4CAF50;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 0 10px;
+        }
+        .code-editor-wrapper {
+            position: relative;
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .code-editor-container {
+            position: relative;
+            flex: 1;
+            border: 3px solid #4CAF50;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .syntax-highlight {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            background: #2d2d2d;
+            color: #d4d4d4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-y: auto;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .keyword { color: #FFD700; font-weight: bold; }
+        .code-editor {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             font-family: 'Courier New', monospace;
             font-size: 14px;
             padding: 15px;
-            border: 3px solid #2196F3;
-            border-radius: 8px;
-            background: white;
-            resize: vertical;
+            background: transparent;
+            color: transparent;
+            caret-color: #4CAF50;
+            resize: none;
             line-height: 1.8;
+            transition: font-size 0.2s;
+            border: none;
+            z-index: 2;
         }
-        
-        .code-editor:focus {
-            outline: none;
-            border-color: #4CAF50;
+        .code-editor:focus { outline: none; }
+        .code-editor-container:focus-within {
+            border-color: #66BB6A;
             box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
         }
-        
-        .syntax-help {
-            margin-top: 20px;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
+        .autocomplete-popup {
+            position: fixed;
+            background: #2d2d2d;
+            border: 2px solid #4CAF50;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+        }
+        .autocomplete-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #3d3d3d;
+            transition: background 0.2s;
+        }
+        .autocomplete-item:hover, .autocomplete-item.selected {
+            background: #3d3d3d;
+        }
+        .autocomplete-keyword {
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .autocomplete-description {
+            color: #888;
+            font-size: 11px;
+            font-style: italic;
+        }
+        .tooltip {
+            position: fixed;
+            background: #2d2d2d;
+            color: #d4d4d4;
+            border: 2px solid #4CAF50;
+            border-radius: 6px;
+            padding: 12px;
+            max-width: 350px;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             font-size: 12px;
-            line-height: 1.8;
-            border: 2px solid #e0e0e0;
+            line-height: 1.6;
         }
-        
-        .syntax-help h4 {
-            margin: 0 0 15px 0;
-            color: #1976D2;
-            font-size: 15px;
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-shrink: 0;
         }
-        
-        .syntax-example {
-            background: #f5f5f5;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 8px 0;
-            font-family: 'Courier New', monospace;
-            color: #333;
-            border-left: 4px solid #2196F3;
-        }
-
         .controls-panel {
             width: 300px;
             background: #f8f9fa;
@@ -231,7 +333,6 @@
             overflow-y: auto;
             flex-shrink: 0;
         }
-
         .palette-block {
             margin: 8px 0;
             cursor: grab;
@@ -242,35 +343,12 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: transform 0.2s;
         }
-
-        .palette-block:hover {
-            transform: scale(1.02);
-        }
-
-        .palette-block:active {
-            cursor: grabbing;
-        }
-
-        .block-control {
-            background: #FFAB19;
-            color: white;
-        }
-
-        .block-data {
-            background: #FF6680;
-            color: white;
-        }
-
-        .block-operator {
-            background: #59C059;
-            color: white;
-        }
-
-        .block-condition {
-            background: #5CB1D6;
-            color: white;
-        }
-
+        .palette-block:hover { transform: scale(1.02); }
+        .palette-block:active { cursor: grabbing; }
+        .block-control { background: #FFAB19; color: white; }
+        .block-data { background: #FF6680; color: white; }
+        .block-operator { background: #59C059; color: white; }
+        .block-condition { background: #5CB1D6; color: white; }
         .workspace-block {
             position: absolute;
             border-radius: 8px;
@@ -281,22 +359,18 @@
             z-index: 10;
             min-width: 180px;
         }
-
         .workspace-block.selected {
             outline: 3px solid #2196F3;
             outline-offset: 2px;
         }
-
         .workspace-block.executing {
             box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
             animation: pulse 0.5s infinite;
         }
-
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-
         .block-slot {
             display: inline-block;
             min-width: 60px;
@@ -310,24 +384,16 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .block-slot:hover {
             background: rgba(255,255,255,0.5);
             border-color: white;
         }
-
         .block-slot.filled {
             background: rgba(255,255,255,0.8);
             border: 2px solid white;
             color: #333;
             font-weight: bold;
         }
-
-        .block-slot.drop-target {
-            background: rgba(76, 175, 80, 0.3);
-            border-color: #4CAF50;
-        }
-
         .block-input {
             background: rgba(0, 0, 0, 0.15);
             border: 1px solid rgba(0, 0, 0, 0.2);
@@ -339,17 +405,12 @@
             margin: 0 4px;
             font-weight: 500;
         }
-
-        .block-input::placeholder {
-            color: rgba(255,255,255,0.6);
-        }
-        
+        .block-input::placeholder { color: rgba(255,255,255,0.6); }
         .block-input:focus {
             outline: none;
             background: rgba(0, 0, 0, 0.25);
             border-color: rgba(255, 255, 255, 0.5);
         }
-
         .block-container {
             border: 2px dashed rgba(255,255,255,0.4);
             border-radius: 8px;
@@ -359,29 +420,16 @@
             background: rgba(0,0,0,0.1);
             position: relative;
         }
-        
         .block-container.drop-active {
             border-color: #4CAF50;
             background: rgba(76, 175, 80, 0.1);
             border-style: solid;
         }
-        
-        .block-container-label {
-            position: absolute;
-            top: -8px;
-            left: 10px;
-            background: inherit;
-            padding: 0 5px;
-            font-size: 10px;
-            opacity: 0.7;
-        }
-        
         .nested-block {
             position: relative;
             margin: 5px 0;
             display: block;
         }
-
         .variable-item {
             background: #FF6680;
             color: white;
@@ -393,11 +441,7 @@
             font-size: 11px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .variable-item:active {
-            cursor: grabbing;
-        }
-
+        .variable-item:active { cursor: grabbing; }
         .btn-create-var {
             background: linear-gradient(45deg, #9c27b0, #7b1fa2);
             color: white;
@@ -408,7 +452,6 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
-
         button {
             padding: 12px;
             border: none;
@@ -419,33 +462,14 @@
             transition: all 0.3s ease;
             width: 100%;
         }
-
-        .btn-execute {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-        }
-
-        .btn-reset {
-            background: linear-gradient(45deg, #ff9800, #f57c00);
-            color: white;
-        }
-
-        .btn-clear {
-            background: linear-gradient(45deg, #f44336, #d32f2f);
-            color: white;
-        }
-
-        .btn-delete {
-            background: linear-gradient(45deg, #f44336, #d32f2f);
-            color: white;
-            font-size: 14px;
-        }
-
+        .btn-execute { background: linear-gradient(45deg, #4CAF50, #45a049); color: white; }
+        .btn-reset { background: linear-gradient(45deg, #ff9800, #f57c00); color: white; }
+        .btn-clear { background: linear-gradient(45deg, #f44336, #d32f2f); color: white; }
+        .btn-delete { background: linear-gradient(45deg, #f44336, #d32f2f); color: white; font-size: 14px; }
         button:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-
         .output-area {
             min-height: 150px;
             padding: 15px;
@@ -458,7 +482,6 @@
             white-space: pre-wrap;
             margin-bottom: 15px;
         }
-
         .variables-display {
             min-height: 100px;
             padding: 15px;
@@ -467,7 +490,6 @@
             border-radius: 6px;
             font-size: 12px;
         }
-
         .variable-value-item {
             display: flex;
             justify-content: space-between;
@@ -476,23 +498,13 @@
             background: white;
             border-radius: 4px;
         }
-
-        .var-name {
-            font-weight: bold;
-            color: #1976D2;
-        }
-
-        .var-value {
-            color: #4CAF50;
-            font-weight: bold;
-        }
-
+        .var-name { font-weight: bold; color: #1976D2; }
+        .var-value { color: #4CAF50; font-weight: bold; }
         .block-start, .block-end {
             border-radius: 20px;
             text-align: center;
             font-weight: bold;
         }
-
         #selectedBlockInfo {
             margin-top: 10px;
             padding: 12px;
@@ -503,7 +515,6 @@
             color: #666;
             border: 2px solid #ddd;
         }
-
         #selectedBlockInfo.active {
             background: #e3f2fd;
             color: #1976D2;
@@ -514,6 +525,7 @@
 <body>
     <div class="container">
         <div class="header">
+            <div class="credits">DESIGNED BY HANSEL PEÑA<br>📞 3143090748</div>
             <h1>🧩 Intérprete de Pseudocódigo</h1>
             <p>Programa con bloques visuales o código de texto</p>
             <div class="mode-switcher">
@@ -526,37 +538,19 @@
             <div class="blocks-panel">
                 <div class="panel-section">
                     <div class="panel-title">⚙️ Control</div>
-                    <div class="palette-block block-control" draggable="true" data-type="start">
-                        🏁 INICIO
-                    </div>
-                    <div class="palette-block block-control" draggable="true" data-type="end">
-                        🏁 FIN
-                    </div>
-                    <div class="palette-block block-condition" draggable="true" data-type="if">
-                        🔀 SI... ENTONCES
-                    </div>
-                    <div class="palette-block block-condition" draggable="true" data-type="else">
-                        🔄 SINO
-                    </div>
-                    <div class="palette-block block-control" draggable="true" data-type="while" style="background: #9C27B0;">
-                        🔁 MIENTRAS
-                    </div>
-                    <div class="palette-block block-control" draggable="true" data-type="for" style="background: #673AB7;">
-                        🔂 PARA
-                    </div>
+                    <div class="palette-block block-control" draggable="true" data-type="start">🏁 INICIO</div>
+                    <div class="palette-block block-control" draggable="true" data-type="end">🏁 FIN</div>
+                    <div class="palette-block block-condition" draggable="true" data-type="if">🔀 SI... ENTONCES</div>
+                    <div class="palette-block block-condition" draggable="true" data-type="else">🔄 SINO</div>
+                    <div class="palette-block block-control" draggable="true" data-type="while" style="background: #9C27B0;">🔁 MIENTRAS</div>
+                    <div class="palette-block block-control" draggable="true" data-type="for" style="background: #673AB7;">🔂 PARA</div>
                 </div>
 
                 <div class="panel-section">
                     <div class="panel-title">💾 Datos</div>
-                    <div class="palette-block block-data" draggable="true" data-type="input">
-                        📥 LEER DEL TECLADO
-                    </div>
-                    <div class="palette-block block-data" draggable="true" data-type="output">
-                        📤 ESCRIBIR EN PANTALLA
-                    </div>
-                    <div class="palette-block block-operator" draggable="true" data-type="calculate">
-                        🧮 CALCULAR
-                    </div>
+                    <div class="palette-block block-data" draggable="true" data-type="input">📥 LEER DEL TECLADO</div>
+                    <div class="palette-block block-data" draggable="true" data-type="output">📤 ESCRIBIR EN PANTALLA</div>
+                    <div class="palette-block block-operator" draggable="true" data-type="calculate">🧮 CALCULAR</div>
                 </div>
 
                 <div class="panel-section">
@@ -566,24 +560,21 @@
                 </div>
                 
                 <div class="panel-section">
-                    <div class="panel-title">🔢 Funciones Matemáticas</div>
-                    <p style="font-size: 10px; color: #666; margin-bottom: 8px;">Usa en expresiones:</p>
+                    <div class="panel-title">🔢 Funciones</div>
                     <div style="background: #e3f2fd; padding: 10px; border-radius: 6px; font-size: 11px; line-height: 1.6;">
-                        <div style="margin-bottom: 6px;"><strong>a % b</strong> → Módulo (resto)</div>
-                        <div style="margin-bottom: 6px;"><strong>sqrt(n)</strong> → Raíz cuadrada</div>
-                        <div style="margin-bottom: 6px;"><strong>pow(a,b)</strong> → Potencia (a^b)</div>
-                        <div style="margin-bottom: 6px;"><strong>abs(n)</strong> → Valor absoluto</div>
-                        <div><strong>floor(n)</strong> → Redondear abajo</div>
+                        <div style="margin-bottom: 6px;"><strong>a % b</strong> → Módulo</div>
+                        <div style="margin-bottom: 6px;"><strong>sqrt(n)</strong> → Raíz</div>
+                        <div style="margin-bottom: 6px;"><strong>pow(a,b)</strong> → Potencia</div>
+                        <div style="margin-bottom: 6px;"><strong>abs(n)</strong> → Absoluto</div>
+                        <div><strong>floor(n)</strong> → Redondear</div>
                     </div>
                 </div>
                 
                 <div class="panel-section">
                     <div class="panel-title">🗑️ Eliminar Bloque</div>
-                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">1. Haz clic en un bloque<br>2. Presiona eliminar</p>
+                    <p style="font-size: 11px; color: #666; margin-bottom: 10px;">1. Clic en bloque<br>2. Presiona eliminar</p>
                     <button class="btn-delete" id="btnDelete">🗑️ Eliminar</button>
-                    <div id="selectedBlockInfo">
-                        Ningún bloque seleccionado
-                    </div>
+                    <div id="selectedBlockInfo">Ningún bloque seleccionado</div>
                 </div>
             </div>
 
@@ -602,39 +593,47 @@
             </div>
             
             <div class="text-editor-panel" id="textEditorPanel">
-                <h3 style="margin: 0 0 15px 0; color: #1976D2;">✍️ Editor de Pseudocódigo</h3>
-                <textarea class="code-editor" id="codeEditor" placeholder="Escribe tu pseudocódigo aquí...
+                <div class="editor-header">
+                    <h3>✍️ Editor de Pseudocódigo</h3>
+                    <div class="editor-controls">
+                        <select class="examples-selector" id="examplesSelector">
+                            <option value="">📚 Cargar Ejemplo...</option>
+                            <option value="sequential">📝 Secuencial</option>
+                            <option value="loop">🔂 Bucle</option>
+                            <option value="conditional">🔀 Condicional</option>
+                            <option value="complex">🧮 Factorial</option>
+                        </select>
+                        <div class="editor-zoom-controls">
+                            <button class="editor-zoom-btn" id="editorZoomOut">-</button>
+                            <span class="editor-zoom-level" id="editorZoomLevel">100%</span>
+                            <button class="editor-zoom-btn" id="editorZoomIn">+</button>
+                            <button class="editor-zoom-btn" id="editorZoomReset" style="width: auto; padding: 0 8px;">⟲</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-editor-wrapper">
+                    <div class="code-editor-container" id="editorContainer">
+                        <div class="syntax-highlight" id="syntaxHighlight"></div>
+                        <textarea class="code-editor" id="codeEditor" placeholder="Escribe tu pseudocódigo aquí... (Presiona Ctrl+Espacio para autocompletar)
 
 Ejemplo:
 INICIO
-    LEER numero1 'Ingrese el primer número'
-    LEER numero2 'Ingrese el segundo número'
-    CALCULAR suma = numero1 + numero2
-    ESCRIBIR 'La suma es:' suma
-FIN"></textarea>
+    LEER numero 'Ingrese un número'
+    ESCRIBIR 'El número es:' numero
+FIN" spellcheck="false"></textarea>
+                    </div>
+                    <div class="autocomplete-popup" id="autocompletePopup"></div>
+                    <div class="tooltip" id="tooltip"></div>
+                </div>
                 
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <div class="action-buttons">
                     <button id="btnTextToBlocks" style="flex: 1; background: linear-gradient(45deg, #4CAF50, #45a049); color: white;">
                         🧩 Convertir a Bloques
                     </button>
                     <button id="btnExecuteText" style="flex: 1; background: linear-gradient(45deg, #2196F3, #1976D2); color: white;">
                         ▶️ Ejecutar Código
                     </button>
-                </div>
-                
-                <div class="syntax-help">
-                    <h4>📖 Sintaxis del Pseudocódigo</h4>
-                    <div class="syntax-example">INICIO<br>...<br>FIN</div>
-                    <div class="syntax-example">LEER variable 'mensaje opcional'</div>
-                    <div class="syntax-example">ESCRIBIR 'mensaje' variable</div>
-                    <div class="syntax-example">CALCULAR variable = expresión</div>
-                    <div class="syntax-example">SI condición ENTONCES<br>    instrucciones<br>FIN_SI</div>
-                    <div class="syntax-example">SINO<br>    instrucciones<br>FIN_SINO</div>
-                    <div class="syntax-example">MIENTRAS condición HACER<br>    instrucciones<br>FIN_MIENTRAS</div>
-                    <div class="syntax-example">PARA variable DESDE inicio HASTA fin<br>    instrucciones<br>FIN_PARA</div>
-                    <p style="margin-top: 15px; color: #666; background: #fff3cd; padding: 10px; border-radius: 4px;">
-                        <strong>💡 Tip:</strong> Usa espacios o tabulaciones para indentar bloques anidados. Las expresiones pueden incluir: +, -, *, /, %, sqrt(), pow(), abs(), etc.
-                    </p>
                 </div>
             </div>
 
@@ -645,18 +644,12 @@ FIN"></textarea>
                 <button class="btn-clear" id="btnClear">🗑️ Limpiar Todo</button>
                 
                 <div class="panel-title" style="margin-top: 20px;">💾 Archivo</div>
-                <button id="btnSave" style="background: linear-gradient(45deg, #673AB7, #512DA8); color: white;">
-                    💾 Guardar Algoritmo
-                </button>
-                <button id="btnLoad" style="background: linear-gradient(45deg, #00897B, #00695C); color: white;">
-                    📂 Abrir Algoritmo
-                </button>
+                <button id="btnSave" style="background: linear-gradient(45deg, #673AB7, #512DA8); color: white;">💾 Guardar Algoritmo</button>
+                <button id="btnLoad" style="background: linear-gradient(45deg, #00897B, #00695C); color: white;">📂 Abrir Algoritmo</button>
                 <input type="file" id="fileInput" accept=".json" style="display: none;">
 
                 <div class="panel-title">🖥️ Salida del Programa</div>
-                <div class="output-area" id="outputArea">
-                    El resultado aparecerá aquí...
-                </div>
+                <div class="output-area" id="outputArea">El resultado aparecerá aquí...</div>
 
                 <div class="panel-title">📊 Variables en Memoria</div>
                 <div class="variables-display" id="variablesDisplay">
@@ -667,19 +660,38 @@ FIN"></textarea>
     </div>
 
     <script>
-        let app = {
-            blocks: [],
-            variables: {},
-            output: [],
-            variableNames: [],
-            blockCounter: 0,
-            selectedBlockId: null,
-            zoomLevel: 1,
-            currentMode: 'blocks'
+        let app = { blocks: [], variables: {}, output: [], variableNames: [], blockCounter: 0, selectedBlockId: null, zoomLevel: 1, editorZoomLevel: 100, currentMode: 'blocks', autocompleteIndex: 0 };
+        
+        const keywords = {
+            'INICIO': { description: 'Marca el comienzo del algoritmo', syntax: 'INICIO' },
+            'FIN': { description: 'Marca el final del algoritmo', syntax: 'FIN' },
+            'LEER': { description: 'Lee un valor del usuario y lo guarda en una variable', syntax: "LEER variable 'mensaje opcional'" },
+            'ESCRIBIR': { description: 'Muestra un mensaje o valor en la pantalla', syntax: "ESCRIBIR 'mensaje' variable" },
+            'CALCULAR': { description: 'Realiza una operación matemática y guarda el resultado', syntax: 'CALCULAR variable = expresión' },
+            'SI': { description: 'Evalúa una condición y ejecuta código si es verdadera', syntax: 'SI condición ENTONCES\n    instrucciones\nFIN_SI' },
+            'ENTONCES': { description: 'Indica el bloque de código que se ejecuta si la condición es verdadera', syntax: 'SI condición ENTONCES' },
+            'SINO': { description: 'Indica el código alternativo si la condición es falsa', syntax: 'SINO\n    instrucciones\nFIN_SINO' },
+            'FIN_SI': { description: 'Cierra el bloque condicional SI', syntax: 'FIN_SI' },
+            'FIN_SINO': { description: 'Cierra el bloque SINO', syntax: 'FIN_SINO' },
+            'MIENTRAS': { description: 'Repite un bloque de código mientras la condición sea verdadera', syntax: 'MIENTRAS condición HACER\n    instrucciones\nFIN_MIENTRAS' },
+            'HACER': { description: 'Indica el inicio del bloque de código del ciclo MIENTRAS', syntax: 'MIENTRAS condición HACER' },
+            'FIN_MIENTRAS': { description: 'Cierra el ciclo MIENTRAS', syntax: 'FIN_MIENTRAS' },
+            'PARA': { description: 'Repite un bloque de código un número específico de veces', syntax: 'PARA variable DESDE inicio HASTA fin\n    instrucciones\nFIN_PARA' },
+            'DESDE': { description: 'Indica el valor inicial del contador en el ciclo PARA', syntax: 'PARA variable DESDE inicio HASTA fin' },
+            'HASTA': { description: 'Indica el valor final del contador en el ciclo PARA', syntax: 'PARA variable DESDE inicio HASTA fin' },
+            'FIN_PARA': { description: 'Cierra el ciclo PARA', syntax: 'FIN_PARA' }
+        };
+
+        const examples = {
+            sequential: `INICIO\n    LEER numero1 'Ingrese el primer número'\n    LEER numero2 'Ingrese el segundo número'\n    CALCULAR suma = numero1 + numero2\n    ESCRIBIR 'La suma es:' suma\nFIN`,
+            loop: `INICIO\n    LEER numero 'Ingrese un número para ver su tabla'\n    ESCRIBIR 'Tabla de multiplicar del' numero\n    PARA i DESDE 1 HASTA 10\n        CALCULAR resultado = numero * i\n        ESCRIBIR numero '*' i '=' resultado\n    FIN_PARA\nFIN`,
+            conditional: `INICIO\n    LEER numero 'Ingrese un número entero'\n    CALCULAR resto = numero % 2\n    SI resto == 0 ENTONCES\n        ESCRIBIR 'El número' numero 'es PAR'\n    FIN_SI\n    SINO\n        ESCRIBIR 'El número' numero 'es IMPAR'\n    FIN_SINO\nFIN`,
+            complex: `INICIO\n    LEER n 'Ingrese un número para calcular su factorial'\n    CALCULAR factorial = 1\n    CALCULAR contador = 1\n    MIENTRAS contador <= n HACER\n        CALCULAR factorial = factorial * contador\n        CALCULAR contador = contador + 1\n    FIN_MIENTRAS\n    ESCRIBIR 'El factorial de' n 'es:' factorial\nFIN`
         };
 
         function init() {
             setupEventListeners();
+            setupEditorFeatures();
             
             document.getElementById('btnCreateVar').onclick = createVariable;
             document.getElementById('btnExecute').onclick = executeProgram;
@@ -699,6 +711,178 @@ FIN"></textarea>
             document.getElementById('btnModeText').onclick = () => switchMode('text');
             document.getElementById('btnTextToBlocks').onclick = convertTextToBlocks;
             document.getElementById('btnExecuteText').onclick = executeTextCode;
+
+            document.getElementById('examplesSelector').onchange = function() {
+                if (this.value) {
+                    loadExample(this.value);
+                    this.value = '';
+                }
+            };
+        }
+
+        function loadExample(type) {
+            document.getElementById('codeEditor').value = examples[type];
+            updateSyntaxHighlight();
+        }
+
+        function setupEditorFeatures() {
+            const editor = document.getElementById('codeEditor');
+            const highlight = document.getElementById('syntaxHighlight');
+
+            document.getElementById('editorZoomIn').onclick = () => adjustEditorZoom(10);
+            document.getElementById('editorZoomOut').onclick = () => adjustEditorZoom(-10);
+            document.getElementById('editorZoomReset').onclick = () => {
+                app.editorZoomLevel = 100;
+                editor.style.fontSize = '14px';
+                highlight.style.fontSize = '14px';
+                document.getElementById('editorZoomLevel').textContent = '100%';
+            };
+
+            editor.addEventListener('scroll', () => {
+                highlight.scrollTop = editor.scrollTop;
+                highlight.scrollLeft = editor.scrollLeft;
+            });
+
+            editor.addEventListener('input', (e) => {
+                updateSyntaxHighlight();
+                
+                const text = e.target.value;
+                const cursorPos = e.target.selectionStart;
+                const textBeforeCursor = text.substring(0, cursorPos);
+                const words = textBeforeCursor.split(/\s+/);
+                const currentWord = words[words.length - 1].toUpperCase();
+
+                if (currentWord.length > 0) {
+                    const matches = Object.keys(keywords).filter(k => k.startsWith(currentWord));
+                    if (matches.length > 0) {
+                        showAutocomplete(matches, e.target, cursorPos);
+                    } else {
+                        document.getElementById('autocompletePopup').style.display = 'none';
+                    }
+                } else {
+                    document.getElementById('autocompletePopup').style.display = 'none';
+                }
+            });
+
+            editor.addEventListener('keydown', (e) => {
+                const autocomplete = document.getElementById('autocompletePopup');
+                
+                if (autocomplete.style.display === 'block') {
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const items = autocomplete.querySelectorAll('.autocomplete-item');
+                        if (items.length > 0) {
+                            items[app.autocompleteIndex].classList.remove('selected');
+                            app.autocompleteIndex = (app.autocompleteIndex + 1) % items.length;
+                            items[app.autocompleteIndex].classList.add('selected');
+                            items[app.autocompleteIndex].scrollIntoView({ block: 'nearest' });
+                        }
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const items = autocomplete.querySelectorAll('.autocomplete-item');
+                        if (items.length > 0) {
+                            items[app.autocompleteIndex].classList.remove('selected');
+                            app.autocompleteIndex = (app.autocompleteIndex - 1 + items.length) % items.length;
+                            items[app.autocompleteIndex].classList.add('selected');
+                            items[app.autocompleteIndex].scrollIntoView({ block: 'nearest' });
+                        }
+                    } else if (e.key === 'Enter' || e.key === 'Tab') {
+                        e.preventDefault();
+                        const items = autocomplete.querySelectorAll('.autocomplete-item');
+                        if (items.length > 0) items[app.autocompleteIndex].click();
+                    } else if (e.key === 'Escape') {
+                        autocomplete.style.display = 'none';
+                    }
+                }
+
+                if (e.ctrlKey && e.key === ' ') {
+                    e.preventDefault();
+                    showAllKeywords(e.target);
+                }
+            });
+
+            updateSyntaxHighlight();
+        }
+
+        function updateSyntaxHighlight() {
+            const editor = document.getElementById('codeEditor');
+            const highlight = document.getElementById('syntaxHighlight');
+            const text = editor.value;
+            
+            let highlighted = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            
+            Object.keys(keywords).forEach(keyword => {
+                const regex = new RegExp('\\b' + keyword + '\\b', 'g');
+                highlighted = highlighted.replace(regex, `<span class="keyword">${keyword}</span>`);
+            });
+            
+            highlight.innerHTML = highlighted;
+        }
+
+        function adjustEditorZoom(delta) {
+            const editor = document.getElementById('codeEditor');
+            const highlight = document.getElementById('syntaxHighlight');
+            app.editorZoomLevel = Math.max(60, Math.min(200, app.editorZoomLevel + delta));
+            const fontSize = (14 * app.editorZoomLevel) / 100;
+            editor.style.fontSize = `${fontSize}px`;
+            highlight.style.fontSize = `${fontSize}px`;
+            document.getElementById('editorZoomLevel').textContent = `${app.editorZoomLevel}%`;
+        }
+
+        function showAutocomplete(matches, editor, cursorPos) {
+            const autocomplete = document.getElementById('autocompletePopup');
+            autocomplete.innerHTML = '';
+            app.autocompleteIndex = 0;
+
+            matches.forEach((keyword, index) => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item' + (index === 0 ? ' selected' : '');
+                item.innerHTML = `<span class="autocomplete-keyword">${keyword}</span><span class="autocomplete-description">${keywords[keyword].description}</span>`;
+                item.onclick = () => {
+                    const text = editor.value;
+                    const before = text.substring(0, cursorPos);
+                    const after = text.substring(cursorPos);
+                    const words = before.split(/\s+/);
+                    const currentWord = words[words.length - 1];
+                    const newBefore = before.substring(0, before.length - currentWord.length) + keyword;
+                    editor.value = newBefore + after;
+                    editor.selectionStart = editor.selectionEnd = newBefore.length;
+                    autocomplete.style.display = 'none';
+                    editor.focus();
+                    updateSyntaxHighlight();
+                };
+                autocomplete.appendChild(item);
+            });
+
+            const coords = getCaretCoordinates(editor, cursorPos);
+            autocomplete.style.left = `${coords.left}px`;
+            autocomplete.style.top = `${coords.top + 20}px`;
+            autocomplete.style.display = 'block';
+        }
+
+        function showAllKeywords(editor) {
+            const allKeywords = Object.keys(keywords);
+            const cursorPos = editor.selectionStart;
+            showAutocomplete(allKeywords, editor, cursorPos);
+        }
+
+        function getCaretCoordinates(editor, position) {
+            const text = editor.value.substring(0, position);
+            const lines = text.split('\n');
+            const lineHeight = parseInt(window.getComputedStyle(editor).lineHeight);
+            const charWidth = parseInt(window.getComputedStyle(editor).fontSize) * 0.6;
+            
+            const line = lines.length - 1;
+            const col = lines[lines.length - 1].length;
+            
+            const rect = editor.getBoundingClientRect();
+            const scrollTop = editor.scrollTop;
+            const scrollLeft = editor.scrollLeft;
+            
+            return {
+                left: rect.left + (col * charWidth) + 15 - scrollLeft,
+                top: rect.top + (line * lineHeight) + 15 - scrollTop + window.pageYOffset
+            };
         }
         
         function switchMode(mode) {
@@ -732,6 +916,7 @@ FIN"></textarea>
             }
             
             document.getElementById('codeEditor').value = code || '// Arrastra bloques en modo Bloques o escribe código aquí';
+            updateSyntaxHighlight();
         }
         
         function blockToText(block, indent = 0) {
@@ -739,12 +924,8 @@ FIN"></textarea>
             let text = '';
             
             switch(block.type) {
-                case 'start':
-                    text = spaces + 'INICIO\n';
-                    break;
-                case 'end':
-                    text = spaces + 'FIN\n';
-                    break;
+                case 'start': text = spaces + 'INICIO\n'; break;
+                case 'end': text = spaces + 'FIN\n'; break;
                 case 'input':
                     const inputMsg = block.data.message ? ` '${block.data.message}'` : '';
                     text = spaces + `LEER ${block.data.variable || 'variable'}${inputMsg}\n`;
@@ -820,7 +1001,6 @@ FIN"></textarea>
                 alert('✓ Código convertido a bloques exitosamente');
             } catch (e) {
                 alert('❌ Error al parsear el código:\n' + e.message);
-                console.error('Error de parseo:', e);
             }
         }
         
@@ -877,124 +1057,78 @@ FIN"></textarea>
                 let parentBlock = blockStack.length > 0 ? blockStack[blockStack.length - 1] : null;
                 
                 if (trimmed === 'INICIO') {
-                    if (isTopLevel) {
-                        createBlockFromText('start', 50, currentY);
-                        currentY += 80;
-                    }
+                    if (isTopLevel) { createBlockFromText('start', 50, currentY); currentY += 80; }
                 } else if (trimmed === 'FIN') {
-                    if (isTopLevel) {
-                        createBlockFromText('end', 50, currentY);
-                        currentY += 80;
-                    }
+                    if (isTopLevel) { createBlockFromText('end', 50, currentY); currentY += 80; }
                 } else if (trimmed.startsWith('LEER')) {
                     const match = trimmed.match(/LEER\s+(\w+)(?:\s+'([^']*)')?/);
                     if (match) {
                         const blockData = { variable: match[1], message: match[2] || '' };
-                        if (isTopLevel) {
-                            createBlockFromText('input', 50, currentY, blockData);
-                            currentY += 100;
-                        } else if (parentBlock) {
-                            createNestedBlockFromText('input', parentBlock, blockData);
-                        }
+                        if (isTopLevel) { createBlockFromText('input', 50, currentY, blockData); currentY += 100; }
+                        else if (parentBlock) createNestedBlockFromText('input', parentBlock, blockData);
                     }
                 } else if (trimmed.startsWith('ESCRIBIR')) {
                     const match = trimmed.match(/ESCRIBIR\s+(?:'([^']*)')?(?:\s+)?(\w+)?/);
                     if (match) {
                         const blockData = { message: match[1] || '', variable: match[2] || '' };
-                        if (isTopLevel) {
-                            createBlockFromText('output', 50, currentY, blockData);
-                            currentY += 100;
-                        } else if (parentBlock) {
-                            createNestedBlockFromText('output', parentBlock, blockData);
-                        }
+                        if (isTopLevel) { createBlockFromText('output', 50, currentY, blockData); currentY += 100; }
+                        else if (parentBlock) createNestedBlockFromText('output', parentBlock, blockData);
                     }
                 } else if (trimmed.startsWith('CALCULAR')) {
                     const match = trimmed.match(/CALCULAR\s+(\w+)\s*=\s*(.+)/);
                     if (match) {
                         const blockData = { targetVar: match[1], expression: match[2].trim() };
-                        if (isTopLevel) {
-                            createBlockFromText('calculate', 50, currentY, blockData);
-                            currentY += 90;
-                        } else if (parentBlock) {
-                            createNestedBlockFromText('calculate', parentBlock, blockData);
-                        }
+                        if (isTopLevel) { createBlockFromText('calculate', 50, currentY, blockData); currentY += 90; }
+                        else if (parentBlock) createNestedBlockFromText('calculate', parentBlock, blockData);
                     }
                 } else if (trimmed.startsWith('SI')) {
                     const match = trimmed.match(/SI\s+(.+?)\s+ENTONCES/);
                     if (match) {
                         const blockData = { condition: match[1] };
                         let newBlock;
-                        if (isTopLevel) {
-                            newBlock = createBlockFromText('if', 50, currentY, blockData);
-                            currentY += 200;
-                        } else if (parentBlock) {
-                            newBlock = createNestedBlockFromText('if', parentBlock, blockData);
-                        }
+                        if (isTopLevel) { newBlock = createBlockFromText('if', 50, currentY, blockData); currentY += 200; }
+                        else if (parentBlock) newBlock = createNestedBlockFromText('if', parentBlock, blockData);
                         if (newBlock) blockStack.push(newBlock);
                     }
                 } else if (trimmed === 'FIN_SI') {
-                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'if') {
-                        blockStack.pop();
-                    }
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'if') blockStack.pop();
                 } else if (trimmed === 'SINO') {
-                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'if') {
-                        blockStack.pop();
-                    }
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'if') blockStack.pop();
                     const blockData = {};
                     let newBlock;
                     const actualParent = blockStack.length > 0 ? blockStack[blockStack.length - 1] : null;
-                    if (actualParent) {
-                        newBlock = createNestedBlockFromText('else', actualParent, blockData);
-                    } else {
-                        newBlock = createBlockFromText('else', 50, currentY, blockData);
-                        currentY += 200;
-                    }
+                    if (actualParent) newBlock = createNestedBlockFromText('else', actualParent, blockData);
+                    else { newBlock = createBlockFromText('else', 50, currentY, blockData); currentY += 200; }
                     if (newBlock) blockStack.push(newBlock);
                 } else if (trimmed === 'FIN_SINO') {
-                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'else') {
-                        blockStack.pop();
-                    }
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'else') blockStack.pop();
                 } else if (trimmed.startsWith('MIENTRAS')) {
                     const match = trimmed.match(/MIENTRAS\s+(.+?)\s+HACER/);
                     if (match) {
                         const blockData = { condition: match[1] };
                         let newBlock;
-                        if (isTopLevel) {
-                            newBlock = createBlockFromText('while', 50, currentY, blockData);
-                            currentY += 200;
-                        } else if (parentBlock) {
-                            newBlock = createNestedBlockFromText('while', parentBlock, blockData);
-                        }
+                        if (isTopLevel) { newBlock = createBlockFromText('while', 50, currentY, blockData); currentY += 200; }
+                        else if (parentBlock) newBlock = createNestedBlockFromText('while', parentBlock, blockData);
                         if (newBlock) blockStack.push(newBlock);
                     }
                 } else if (trimmed === 'FIN_MIENTRAS') {
-                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'while') {
-                        blockStack.pop();
-                    }
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'while') blockStack.pop();
                 } else if (trimmed.startsWith('PARA')) {
                     const match = trimmed.match(/PARA\s+(\w+)\s+DESDE\s+(.+?)\s+HASTA\s+(.+)/);
                     if (match) {
                         const blockData = { variable: match[1], start: match[2].trim(), end: match[3].trim() };
                         let newBlock;
-                        if (isTopLevel) {
-                            newBlock = createBlockFromText('for', 50, currentY, blockData);
-                            currentY += 200;
-                        } else if (parentBlock) {
-                            newBlock = createNestedBlockFromText('for', parentBlock, blockData);
-                        }
+                        if (isTopLevel) { newBlock = createBlockFromText('for', 50, currentY, blockData); currentY += 200; }
+                        else if (parentBlock) newBlock = createNestedBlockFromText('for', parentBlock, blockData);
                         if (newBlock) blockStack.push(newBlock);
                     }
                 } else if (trimmed === 'FIN_PARA') {
-                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'for') {
-                        blockStack.pop();
-                    }
+                    if (blockStack.length > 0 && blockStack[blockStack.length - 1].type === 'for') blockStack.pop();
                 }
             }
             
             const emptyMsg = document.getElementById('emptyMessage');
-            if (emptyMsg && app.blocks.length > 0) {
-                emptyMsg.style.display = 'none';
-            }
+            if (emptyMsg && app.blocks.length > 0) emptyMsg.style.display = 'none';
         }
         
         function createBlockFromText(type, x, y, data = {}) {
@@ -1015,20 +1149,9 @@ FIN"></textarea>
             return block;
         }
         
-        function zoomIn() {
-            app.zoomLevel = Math.min(app.zoomLevel + 0.1, 2);
-            applyZoom();
-        }
-        
-        function zoomOut() {
-            app.zoomLevel = Math.max(app.zoomLevel - 0.1, 0.3);
-            applyZoom();
-        }
-        
-        function zoomReset() {
-            app.zoomLevel = 1;
-            applyZoom();
-        }
+        function zoomIn() { app.zoomLevel = Math.min(app.zoomLevel + 0.1, 2); applyZoom(); }
+        function zoomOut() { app.zoomLevel = Math.max(app.zoomLevel - 0.1, 0.3); applyZoom(); }
+        function zoomReset() { app.zoomLevel = 1; applyZoom(); }
         
         function applyZoom() {
             const workspaceContent = document.getElementById('workspaceContent');
@@ -1048,33 +1171,22 @@ FIN"></textarea>
                     e.dataTransfer.setData('fromPalette', 'true');
                     e.target.style.opacity = '0.5';
                 });
-                
-                block.addEventListener('dragend', (e) => {
-                    e.target.style.opacity = '1';
-                });
+                block.addEventListener('dragend', (e) => { e.target.style.opacity = '1'; });
             });
 
-            workspace.addEventListener('dragover', (e) => {
-                e.preventDefault();
-            });
-
+            workspace.addEventListener('dragover', (e) => { e.preventDefault(); });
             workspace.addEventListener('drop', (e) => {
                 e.preventDefault();
                 const blockType = e.dataTransfer.getData('blockType');
                 const fromPalette = e.dataTransfer.getData('fromPalette');
-                
                 if (!fromPalette || !blockType) return;
-                
                 const rect = workspace.getBoundingClientRect();
                 const x = e.clientX - rect.left + workspace.scrollLeft - 10;
                 const y = e.clientY - rect.top + workspace.scrollTop - 10;
-                
                 createBlock(blockType, x, y);
-                
                 const emptyMsg = document.getElementById('emptyMessage');
                 if (emptyMsg) emptyMsg.style.display = 'none';
             });
-            
             workspace.addEventListener('click', (e) => {
                 if (e.target.id === 'workspace' || e.target.id === 'workspaceContent' || e.target.id === 'emptyMessage') {
                     deselectAll();
@@ -1098,9 +1210,7 @@ FIN"></textarea>
             blockEl.style.top = `${block.y}px`;
             
             blockEl.onclick = (e) => {
-                if (e.target.tagName === 'INPUT' || e.target.classList.contains('block-slot')) {
-                    return;
-                }
+                if (e.target.tagName === 'INPUT' || e.target.classList.contains('block-slot')) return;
                 e.stopPropagation();
                 selectBlock(block.id);
             };
@@ -1116,137 +1226,37 @@ FIN"></textarea>
                     break;
                 case 'input':
                     blockEl.className += ' block-data';
-                    blockEl.innerHTML = `
-                        <div>📥 <strong>LEER DEL TECLADO</strong></div>
-                        <input class="block-input" placeholder="Mensaje..." 
-                               value="${block.data.message || ''}"
-                               oninput="updateBlockData('${block.id}', 'message', this.value)">
-                        <div style="margin-top: 6px;">
-                            Guardar en: <span class="block-slot ${block.data.variable ? 'filled' : ''}" 
-                                ondrop="dropVariable(event, '${block.id}', 'variable')"
-                                ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
-                                ondragleave="event.target.classList.remove('drop-target')">
-                                ${block.data.variable || 'variable'}
-                            </span>
-                        </div>
-                    `;
+                    blockEl.innerHTML = `<div>📥 <strong>LEER DEL TECLADO</strong></div><input class="block-input" placeholder="Mensaje..." value="${block.data.message || ''}" oninput="updateBlockData('${block.id}', 'message', this.value)"><div style="margin-top: 6px;">Guardar en: <span class="block-slot ${block.data.variable ? 'filled' : ''}" ondrop="dropVariable(event, '${block.id}', 'variable')" ondragover="event.preventDefault(); event.target.classList.add('drop-target')" ondragleave="event.target.classList.remove('drop-target')">${block.data.variable || 'variable'}</span></div>`;
                     break;
                 case 'output':
                     blockEl.className += ' block-data';
-                    blockEl.innerHTML = `
-                        <div>📤 <strong>ESCRIBIR EN PANTALLA</strong></div>
-                        <input class="block-input" placeholder="Mensaje..." 
-                               value="${block.data.message || ''}"
-                               oninput="updateBlockData('${block.id}', 'message', this.value)">
-                        <div style="margin-top: 6px;">
-                            Mostrar: <span class="block-slot ${block.data.variable ? 'filled' : ''}"
-                                ondrop="dropVariable(event, '${block.id}', 'variable')"
-                                ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
-                                ondragleave="event.target.classList.remove('drop-target')">
-                                ${block.data.variable || 'variable'}
-                            </span>
-                        </div>
-                    `;
+                    blockEl.innerHTML = `<div>📤 <strong>ESCRIBIR EN PANTALLA</strong></div><input class="block-input" placeholder="Mensaje..." value="${block.data.message || ''}" oninput="updateBlockData('${block.id}', 'message', this.value)"><div style="margin-top: 6px;">Mostrar: <span class="block-slot ${block.data.variable ? 'filled' : ''}" ondrop="dropVariable(event, '${block.id}', 'variable')" ondragover="event.preventDefault(); event.target.classList.add('drop-target')" ondragleave="event.target.classList.remove('drop-target')">${block.data.variable || 'variable'}</span></div>`;
                     break;
                 case 'calculate':
                     blockEl.className += ' block-operator';
-                    blockEl.innerHTML = `
-                        <div>🧮 <strong>CALCULAR</strong></div>
-                        <div style="margin-top: 6px;">
-                            <span class="block-slot ${block.data.targetVar ? 'filled' : ''}"
-                                ondrop="dropVariable(event, '${block.id}', 'targetVar')"
-                                ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
-                                ondragleave="event.target.classList.remove('drop-target')">
-                                ${block.data.targetVar || 'variable'}
-                            </span> = 
-                            <input class="block-input" style="width: 140px;" placeholder="expresión (a+b)" 
-                                   value="${block.data.expression || ''}"
-                                   oninput="updateBlockData('${block.id}', 'expression', this.value)">
-                        </div>
-                    `;
+                    blockEl.innerHTML = `<div>🧮 <strong>CALCULAR</strong></div><div style="margin-top: 6px;"><span class="block-slot ${block.data.targetVar ? 'filled' : ''}" ondrop="dropVariable(event, '${block.id}', 'targetVar')" ondragover="event.preventDefault(); event.target.classList.add('drop-target')" ondragleave="event.target.classList.remove('drop-target')">${block.data.targetVar || 'variable'}</span> = <input class="block-input" style="width: 140px;" placeholder="expresión (a+b)" value="${block.data.expression || ''}" oninput="updateBlockData('${block.id}', 'expression', this.value)"></div>`;
                     break;
                 case 'if':
                     blockEl.className += ' block-condition';
                     blockEl.style.minWidth = '300px';
-                    blockEl.innerHTML = `
-                        <div><strong>SI</strong> 
-                            <input class="block-input" style="width: 160px;" placeholder="condición (a>5)" 
-                                   value="${block.data.condition || ''}"
-                                   oninput="updateBlockData('${block.id}', 'condition', this.value)">
-                            <strong>ENTONCES</strong>
-                        </div>
-                        <div class="block-container" id="container_${block.id}"
-                             ondrop="dropIntoContainer(event, '${block.id}')"
-                             ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')"
-                             ondragleave="event.currentTarget.classList.remove('drop-active')">
-                            <span class="block-container-label">Arrastra bloques aquí</span>
-                            <div id="children_${block.id}"></div>
-                        </div>
-                    `;
+                    blockEl.innerHTML = `<div><strong>SI</strong> <input class="block-input" style="width: 160px;" placeholder="condición (a>5)" value="${block.data.condition || ''}" oninput="updateBlockData('${block.id}', 'condition', this.value)"> <strong>ENTONCES</strong></div><div class="block-container" id="container_${block.id}" ondrop="dropIntoContainer(event, '${block.id}')" ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')" ondragleave="event.currentTarget.classList.remove('drop-active')"><div id="children_${block.id}"></div></div>`;
                     break;
                 case 'else':
                     blockEl.className += ' block-condition';
                     blockEl.style.minWidth = '300px';
-                    blockEl.innerHTML = `
-                        <div><strong>SINO</strong></div>
-                        <div class="block-container" id="container_${block.id}"
-                             ondrop="dropIntoContainer(event, '${block.id}')"
-                             ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')"
-                             ondragleave="event.currentTarget.classList.remove('drop-active')">
-                            <span class="block-container-label">Arrastra bloques aquí</span>
-                            <div id="children_${block.id}"></div>
-                        </div>
-                    `;
+                    blockEl.innerHTML = `<div><strong>SINO</strong></div><div class="block-container" id="container_${block.id}" ondrop="dropIntoContainer(event, '${block.id}')" ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')" ondragleave="event.currentTarget.classList.remove('drop-active')"><div id="children_${block.id}"></div></div>`;
                     break;
                 case 'while':
                     blockEl.className += ' block-control';
                     blockEl.style.background = '#9C27B0';
                     blockEl.style.minWidth = '300px';
-                    blockEl.innerHTML = `
-                        <div><strong>🔁 MIENTRAS</strong> 
-                            <input class="block-input" style="width: 140px;" placeholder="condición (i<10)" 
-                                   value="${block.data.condition || ''}"
-                                   oninput="updateBlockData('${block.id}', 'condition', this.value)">
-                            <strong>HACER</strong>
-                        </div>
-                        <div class="block-container" id="container_${block.id}"
-                             ondrop="dropIntoContainer(event, '${block.id}')"
-                             ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')"
-                             ondragleave="event.currentTarget.classList.remove('drop-active')">
-                            <span class="block-container-label">Instrucciones del ciclo</span>
-                            <div id="children_${block.id}"></div>
-                        </div>
-                    `;
+                    blockEl.innerHTML = `<div><strong>🔁 MIENTRAS</strong> <input class="block-input" style="width: 140px;" placeholder="condición (i<10)" value="${block.data.condition || ''}" oninput="updateBlockData('${block.id}', 'condition', this.value)"> <strong>HACER</strong></div><div class="block-container" id="container_${block.id}" ondrop="dropIntoContainer(event, '${block.id}')" ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')" ondragleave="event.currentTarget.classList.remove('drop-active')"><div id="children_${block.id}"></div></div>`;
                     break;
                 case 'for':
                     blockEl.className += ' block-control';
                     blockEl.style.background = '#673AB7';
                     blockEl.style.minWidth = '350px';
-                    blockEl.innerHTML = `
-                        <div><strong>🔂 PARA</strong></div>
-                        <div style="margin-top: 6px; font-size: 11px;">
-                            <span class="block-slot ${block.data.variable ? 'filled' : ''}"
-                                ondrop="dropVariable(event, '${block.id}', 'variable')"
-                                ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
-                                ondragleave="event.target.classList.remove('drop-target')">
-                                ${block.data.variable || 'i'}
-                            </span> desde 
-                            <input class="block-input" style="width: 50px;" placeholder="1" 
-                                   value="${block.data.start || ''}"
-                                   oninput="updateBlockData('${block.id}', 'start', this.value)">
-                            hasta 
-                            <input class="block-input" style="width: 50px;" placeholder="10" 
-                                   value="${block.data.end || ''}"
-                                   oninput="updateBlockData('${block.id}', 'end', this.value)">
-                        </div>
-                        <div class="block-container" id="container_${block.id}"
-                             ondrop="dropIntoContainer(event, '${block.id}')"
-                             ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')"
-                             ondragleave="event.currentTarget.classList.remove('drop-active')">
-                            <span class="block-container-label">Instrucciones del ciclo</span>
-                            <div id="children_${block.id}"></div>
-                        </div>
-                    `;
+                    blockEl.innerHTML = `<div><strong>🔂 PARA</strong></div><div style="margin-top: 6px; font-size: 11px;"><span class="block-slot ${block.data.variable ? 'filled' : ''}" ondrop="dropVariable(event, '${block.id}', 'variable')" ondragover="event.preventDefault(); event.target.classList.add('drop-target')" ondragleave="event.target.classList.remove('drop-target')">${block.data.variable || 'i'}</span> desde <input class="block-input" style="width: 50px;" placeholder="1" value="${block.data.start || ''}" oninput="updateBlockData('${block.id}', 'start', this.value)"> hasta <input class="block-input" style="width: 50px;" placeholder="10" value="${block.data.end || ''}" oninput="updateBlockData('${block.id}', 'end', this.value)"></div><div class="block-container" id="container_${block.id}" ondrop="dropIntoContainer(event, '${block.id}')" ondragover="event.preventDefault(); event.currentTarget.classList.add('drop-active')" ondragleave="event.currentTarget.classList.remove('drop-active')"><div id="children_${block.id}"></div></div>`;
                     break;
             }
 
@@ -1255,74 +1265,43 @@ FIN"></textarea>
         }
 
         function makeDraggable(element) {
-            let isDragging = false;
-            let offsetX = 0;
-            let offsetY = 0;
-
+            let isDragging = false, offsetX = 0, offsetY = 0;
             element.addEventListener('mousedown', (e) => {
-                if (e.target.tagName === 'INPUT' || 
-                    e.target.classList.contains('block-slot') ||
-                    e.target.classList.contains('block-container')) {
-                    return;
-                }
-                
+                if (e.target.tagName === 'INPUT' || e.target.classList.contains('block-slot') || e.target.classList.contains('block-container')) return;
                 isDragging = true;
                 element.style.zIndex = '100';
-                
                 const rect = element.getBoundingClientRect();
                 offsetX = e.clientX - rect.left;
                 offsetY = e.clientY - rect.top;
-                
                 e.preventDefault();
             });
-
             document.addEventListener('mousemove', (e) => {
                 if (!isDragging) return;
-                
                 const workspace = document.getElementById('workspace');
                 const workspaceRect = workspace.getBoundingClientRect();
-                
                 let newX = e.clientX - workspaceRect.left - offsetX + workspace.scrollLeft;
                 let newY = e.clientY - workspaceRect.top - offsetY + workspace.scrollTop;
-                
                 newX = Math.max(0, newX);
                 newY = Math.max(0, newY);
-                
                 element.style.left = `${newX}px`;
                 element.style.top = `${newY}px`;
-                
                 const block = app.blocks.find(b => b.id === element.id);
-                if (block) {
-                    block.x = newX;
-                    block.y = newY;
-                }
+                if (block) { block.x = newX; block.y = newY; }
             });
-
             document.addEventListener('mouseup', () => {
-                if (isDragging) {
-                    isDragging = false;
-                    element.style.zIndex = '10';
-                }
+                if (isDragging) { isDragging = false; element.style.zIndex = '10'; }
             });
         }
 
         function selectBlock(blockId) {
             deselectAll();
-            
             app.selectedBlockId = blockId;
             const blockEl = document.getElementById(blockId);
-            if (blockEl) {
-                blockEl.classList.add('selected');
-            }
-            
+            if (blockEl) blockEl.classList.add('selected');
             const block = app.blocks.find(b => b.id === blockId);
             const infoEl = document.getElementById('selectedBlockInfo');
             if (infoEl && block) {
-                const typeNames = {
-                    'start': 'INICIO', 'end': 'FIN', 'input': 'LEER',
-                    'output': 'ESCRIBIR', 'calculate': 'CALCULAR',
-                    'if': 'SI', 'else': 'SINO', 'while': 'MIENTRAS', 'for': 'PARA'
-                };
+                const typeNames = { 'start': 'INICIO', 'end': 'FIN', 'input': 'LEER', 'output': 'ESCRIBIR', 'calculate': 'CALCULAR', 'if': 'SI', 'else': 'SINO', 'while': 'MIENTRAS', 'for': 'PARA' };
                 infoEl.innerHTML = `<strong>✓ Seleccionado:</strong><br>${typeNames[block.type] || block.type}`;
                 infoEl.classList.add('active');
             }
@@ -1330,54 +1309,37 @@ FIN"></textarea>
 
         function deselectAll() {
             app.selectedBlockId = null;
-            document.querySelectorAll('.workspace-block').forEach(el => {
-                el.classList.remove('selected');
-            });
+            document.querySelectorAll('.workspace-block').forEach(el => el.classList.remove('selected'));
             const infoEl = document.getElementById('selectedBlockInfo');
-            if (infoEl) {
-                infoEl.innerHTML = 'Ningún bloque seleccionado';
-                infoEl.classList.remove('active');
-            }
+            if (infoEl) { infoEl.innerHTML = 'Ningún bloque seleccionado'; infoEl.classList.remove('active'); }
         }
 
         function deleteSelectedBlock() {
-            if (!app.selectedBlockId) {
-                alert('Primero selecciona un bloque haciendo clic sobre él');
-                return;
-            }
-            
+            if (!app.selectedBlockId) { alert('Primero selecciona un bloque haciendo clic sobre él'); return; }
             const blockIndex = app.blocks.findIndex(b => b.id === app.selectedBlockId);
             if (blockIndex > -1) {
                 const blockEl = document.getElementById(app.selectedBlockId);
                 if (blockEl) blockEl.remove();
-                
                 app.blocks.splice(blockIndex, 1);
-                
                 const infoEl = document.getElementById('selectedBlockInfo');
                 if (infoEl) {
                     infoEl.innerHTML = '✓ Bloque eliminado';
                     infoEl.classList.remove('active');
-                    setTimeout(() => {
-                        infoEl.innerHTML = 'Ningún bloque seleccionado';
-                    }, 1500);
+                    setTimeout(() => { infoEl.innerHTML = 'Ningún bloque seleccionado'; }, 1500);
                 }
-                
                 app.selectedBlockId = null;
             }
         }
 
         function updateBlockData(blockId, key, value) {
             const block = app.blocks.find(b => b.id === blockId);
-            if (block) {
-                block.data[key] = value;
-            }
+            if (block) block.data[key] = value;
         }
 
         function dropVariable(event, blockId, slotName) {
             event.preventDefault();
             event.stopPropagation();
             event.target.classList.remove('drop-target');
-            
             const varName = event.dataTransfer.getData('varName');
             if (varName) {
                 const block = app.blocks.find(b => b.id === blockId);
@@ -1393,28 +1355,16 @@ FIN"></textarea>
             event.preventDefault();
             event.stopPropagation();
             event.currentTarget.classList.remove('drop-active');
-            
             const blockType = event.dataTransfer.getData('blockType');
             const fromPalette = event.dataTransfer.getData('fromPalette');
-            
             if (fromPalette && blockType) {
-                const newBlock = {
-                    id: `block_${app.blockCounter++}`,
-                    type: blockType,
-                    data: {},
-                    parent: parentBlockId,
-                    isNested: true,
-                    children: []
-                };
-                
+                const newBlock = { id: `block_${app.blockCounter++}`, type: blockType, data: {}, parent: parentBlockId, isNested: true, children: [] };
                 app.blocks.push(newBlock);
-                
                 const parentBlock = app.blocks.find(b => b.id === parentBlockId);
                 if (parentBlock) {
                     if (!parentBlock.children) parentBlock.children = [];
                     parentBlock.children.push(newBlock.id);
                 }
-                
                 renderNestedBlock(newBlock, parentBlockId);
             }
         }
@@ -1422,14 +1372,10 @@ FIN"></textarea>
         function renderNestedBlock(block, parentId) {
             const container = document.getElementById(`children_${parentId}`);
             if (!container) return;
-            
             const blockEl = document.createElement('div');
             blockEl.className = `nested-block block-${block.type}`;
             blockEl.id = block.id;
-            const colors = {
-                'input': '#FF6680', 'output': '#FF6680', 'calculate': '#59C059',
-                'if': '#5CB1D6', 'else': '#5CB1D6', 'while': '#9C27B0', 'for': '#673AB7'
-            };
+            const colors = { 'input': '#FF6680', 'output': '#FF6680', 'calculate': '#59C059', 'if': '#5CB1D6', 'else': '#5CB1D6', 'while': '#9C27B0', 'for': '#673AB7' };
             blockEl.style.background = colors[block.type] || '#999';
             blockEl.style.color = 'white';
             blockEl.style.padding = '8px 12px';
@@ -1437,62 +1383,24 @@ FIN"></textarea>
             blockEl.style.fontSize = '12px';
             blockEl.style.marginBottom = '5px';
             blockEl.style.cursor = 'pointer';
-            
             blockEl.onclick = (e) => {
-                if (e.target.tagName === 'INPUT' || e.target.classList.contains('block-slot')) {
-                    return;
-                }
+                if (e.target.tagName === 'INPUT' || e.target.classList.contains('block-slot')) return;
                 e.stopPropagation();
                 selectBlock(block.id);
             };
-            
             switch(block.type) {
                 case 'input':
-                    blockEl.innerHTML = `
-                        <div>📥 <strong>LEER</strong></div>
-                        <input class="block-input" placeholder="Mensaje..." 
-                               value="${block.data.message || ''}"
-                               oninput="updateBlockData('${block.id}', 'message', this.value)">
-                        <div>Guardar en: <span class="block-slot ${block.data.variable ? 'filled' : ''}"
-                            ondrop="dropVariable(event, '${block.id}', 'variable')"
-                            ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
-                            ondragleave="event.target.classList.remove('drop-target')">
-                            ${block.data.variable || 'variable'}
-                        </span></div>
-                    `;
+                    blockEl.innerHTML = `<div>📥 <strong>LEER</strong></div><input class="block-input" placeholder="Mensaje..." value="${block.data.message || ''}" oninput="updateBlockData('${block.id}', 'message', this.value)"><div>Guardar en: <span class="block-slot ${block.data.variable ? 'filled' : ''}" ondrop="dropVariable(event, '${block.id}', 'variable')" ondragover="event.preventDefault(); event.target.classList.add('drop-target')" ondragleave="event.target.classList.remove('drop-target')">${block.data.variable || 'variable'}</span></div>`;
                     break;
                 case 'output':
-                    blockEl.innerHTML = `
-                        <div>📤 <strong>ESCRIBIR</strong></div>
-                        <input class="block-input" placeholder="Mensaje..." 
-                               value="${block.data.message || ''}"
-                               oninput="updateBlockData('${block.id}', 'message', this.value)">
-                        <div>Mostrar: <span class="block-slot ${block.data.variable ? 'filled' : ''}"
-                            ondrop="dropVariable(event, '${block.id}', 'variable')"
-                            ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
-                            ondragleave="event.target.classList.remove('drop-target')">
-                            ${block.data.variable || 'variable'}
-                        </span></div>
-                    `;
+                    blockEl.innerHTML = `<div>📤 <strong>ESCRIBIR</strong></div><input class="block-input" placeholder="Mensaje..." value="${block.data.message || ''}" oninput="updateBlockData('${block.id}', 'message', this.value)"><div>Mostrar: <span class="block-slot ${block.data.variable ? 'filled' : ''}" ondrop="dropVariable(event, '${block.id}', 'variable')" ondragover="event.preventDefault(); event.target.classList.add('drop-target')" ondragleave="event.target.classList.remove('drop-target')">${block.data.variable || 'variable'}</span></div>`;
                     break;
                 case 'calculate':
-                    blockEl.innerHTML = `
-                        <div>🧮 <strong>CALCULAR</strong></div>
-                        <span class="block-slot ${block.data.targetVar ? 'filled' : ''}"
-                            ondrop="dropVariable(event, '${block.id}', 'targetVar')"
-                            ondragover="event.preventDefault(); event.target.classList.add('drop-target')"
-                            ondragleave="event.target.classList.remove('drop-target')">
-                            ${block.data.targetVar || 'var'}
-                        </span> = 
-                        <input class="block-input" style="width: 100px;" placeholder="expresión"
-                               value="${block.data.expression || ''}"
-                               oninput="updateBlockData('${block.id}', 'expression', this.value)">
-                    `;
+                    blockEl.innerHTML = `<div>🧮 <strong>CALCULAR</strong></div><span class="block-slot ${block.data.targetVar ? 'filled' : ''}" ondrop="dropVariable(event, '${block.id}', 'targetVar')" ondragover="event.preventDefault(); event.target.classList.add('drop-target')" ondragleave="event.target.classList.remove('drop-target')">${block.data.targetVar || 'var'}</span> = <input class="block-input" style="width: 100px;" placeholder="expresión" value="${block.data.expression || ''}" oninput="updateBlockData('${block.id}', 'expression', this.value)">`;
                     break;
                 default:
                     blockEl.textContent = `${block.type}`;
             }
-            
             container.appendChild(blockEl);
         }
 
@@ -1509,27 +1417,17 @@ FIN"></textarea>
 
         function renderVariablesList() {
             const list = document.getElementById('variablesList');
-            list.innerHTML = app.variableNames.map(name => 
-                `<div class="variable-item" draggable="true" data-varname="${name}">${name}</div>`
-            ).join('');
-            
+            list.innerHTML = app.variableNames.map(name => `<div class="variable-item" draggable="true" data-varname="${name}">${name}</div>`).join('');
             list.querySelectorAll('.variable-item').forEach(item => {
-                item.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('varName', e.target.dataset.varname);
-                });
+                item.addEventListener('dragstart', (e) => { e.dataTransfer.setData('varName', e.target.dataset.varname); });
             });
         }
 
         async function executeProgram() {
             app.variables = {};
             app.output = [];
-            
             const topBlocks = app.blocks.filter(b => !b.isNested).sort((a, b) => a.y - b.y);
-            
-            for (const block of topBlocks) {
-                await executeBlock(block);
-            }
-            
+            for (const block of topBlocks) { await executeBlock(block); }
             showOutput();
             showVariables();
         }
@@ -1540,14 +1438,9 @@ FIN"></textarea>
                 blockEl.classList.add('executing');
                 await new Promise(r => setTimeout(r, 500));
             }
-
             switch(block.type) {
-                case 'start':
-                    app.output.push('▶️ Iniciando programa...');
-                    break;
-                case 'end':
-                    app.output.push('✅ Programa finalizado');
-                    break;
+                case 'start': app.output.push('▶️ Iniciando programa...'); break;
+                case 'end': app.output.push('✅ Programa finalizado'); break;
                 case 'input':
                     if (block.data.variable) {
                         const msg = block.data.message || `Valor para ${block.data.variable}:`;
@@ -1571,15 +1464,10 @@ FIN"></textarea>
                             const before = app.variables[block.data.targetVar];
                             const result = evaluateExpression(block.data.expression);
                             app.variables[block.data.targetVar] = result;
-                            if (before !== undefined) {
-                                app.output.push(`🧮 ${block.data.targetVar}: ${before} → ${result}`);
-                            } else {
-                                app.output.push(`🧮 ${block.data.targetVar} = ${result}`);
-                            }
+                            if (before !== undefined) app.output.push(`🧮 ${block.data.targetVar}: ${before} → ${result}`);
+                            else app.output.push(`🧮 ${block.data.targetVar} = ${result}`);
                             showVariables();
-                        } catch (e) {
-                            app.output.push(`❌ Error: ${e.message}`);
-                        }
+                        } catch (e) { app.output.push(`❌ Error: ${e.message}`); }
                     }
                     break;
                 case 'if':
@@ -1593,41 +1481,27 @@ FIN"></textarea>
                                     if (child) await executeBlock(child);
                                 }
                             }
-                        } catch (e) {
-                            app.output.push(`❌ Error: ${e.message}`);
-                        }
+                        } catch (e) { app.output.push(`❌ Error: ${e.message}`); }
                     }
                     break;
                 case 'for':
                     const varName = block.data.variable;
                     const start = block.data.start ? parseInt(block.data.start) : 1;
                     const end = block.data.end ? parseInt(block.data.end) : 10;
-                    
-                    if (!varName) {
-                        app.output.push(`⚠️ PARA: Falta asignar la variable de control`);
-                        break;
-                    }
-                    
+                    if (!varName) { app.output.push(`⚠️ PARA: Falta asignar la variable de control`); break; }
                     const currentBlock = app.blocks.find(b => b.id === block.id);
                     const childrenIds = currentBlock && currentBlock.children ? currentBlock.children : [];
-                    
                     app.output.push(`🔂 PARA: ${varName} de ${start} a ${end}`);
-                    
                     for (let i = start; i <= end; i++) {
                         app.variables[varName] = i;
                         app.output.push(`   📍 ${varName} = ${i}`);
                         showVariables();
-                        
                         if (childrenIds.length > 0) {
                             for (const childId of childrenIds) {
                                 const child = app.blocks.find(b => b.id === childId);
-                                if (child) {
-                                    await executeBlock(child);
-                                }
+                                if (child) await executeBlock(child);
                             }
-                        } else {
-                            app.output.push(`   ⚠️ Sin instrucciones`);
-                        }
+                        } else { app.output.push(`   ⚠️ Sin instrucciones`); }
                         showOutput();
                     }
                     app.output.push(`✓ Ciclo completado`);
@@ -1637,78 +1511,42 @@ FIN"></textarea>
                         app.output.push(`🔁 MIENTRAS: "${block.data.condition}"`);
                         let iter = 0;
                         const max = 100;
-                        
                         try {
                             let cond = evaluateExpression(block.data.condition);
                             while (cond && iter < max) {
                                 iter++;
                                 app.output.push(`   📍 Iteración ${iter}`);
-                                
                                 if (block.children && block.children.length > 0) {
                                     for (const childId of block.children) {
                                         const child = app.blocks.find(b => b.id === childId);
                                         if (child) await executeBlock(child);
                                     }
                                 }
-                                
                                 cond = evaluateExpression(block.data.condition);
                                 showOutput();
                             }
-                            
-                            if (iter >= max) {
-                                app.output.push(`⚠️ Detenido: ${max} iteraciones`);
-                            } else {
-                                app.output.push(`✓ Ciclo completado: ${iter} iteraciones`);
-                            }
-                        } catch (e) {
-                            app.output.push(`❌ Error: ${e.message}`);
-                        }
+                            if (iter >= max) app.output.push(`⚠️ Detenido: ${max} iteraciones`);
+                            else app.output.push(`✓ Ciclo completado: ${iter} iteraciones`);
+                        } catch (e) { app.output.push(`❌ Error: ${e.message}`); }
                     }
                     break;
             }
-
-            if (blockEl) {
-                blockEl.classList.remove('executing');
-            }
+            if (blockEl) blockEl.classList.remove('executing');
             showOutput();
         }
 
         function evaluateExpression(expr) {
             let sanitized = expr;
-            
             for (let varName in app.variables) {
                 const regex = new RegExp('\\b' + varName + '\\b', 'g');
                 sanitized = sanitized.replace(regex, app.variables[varName]);
             }
-            
-            const mathFunctions = {
-                sqrt: Math.sqrt,
-                pow: Math.pow,
-                abs: Math.abs,
-                floor: Math.floor,
-                ceil: Math.ceil,
-                round: Math.round,
-                sin: Math.sin,
-                cos: Math.cos,
-                tan: Math.tan,
-                log: Math.log,
-                exp: Math.exp,
-                min: Math.min,
-                max: Math.max
-            };
-            
-            const funcBody = `
-                with (mathContext) {
-                    return (${sanitized});
-                }
-            `;
-            
+            const mathFunctions = { sqrt: Math.sqrt, pow: Math.pow, abs: Math.abs, floor: Math.floor, ceil: Math.ceil, round: Math.round, sin: Math.sin, cos: Math.cos, tan: Math.tan, log: Math.log, exp: Math.exp, min: Math.min, max: Math.max };
+            const funcBody = `with (mathContext) { return (${sanitized}); }`;
             try {
                 const func = new Function('mathContext', funcBody);
                 return func(mathFunctions);
-            } catch (e) {
-                throw new Error('Expresión inválida: ' + expr);
-            }
+            } catch (e) { throw new Error('Expresión inválida: ' + expr); }
         }
 
         function showOutput() {
@@ -1722,7 +1560,6 @@ FIN"></textarea>
                 if (line.includes('❌')) return `<div style="color: #f44336; font-weight: bold;">${line}</div>`;
                 return `<div>${line}</div>`;
             }).join('') || '<div style="color: #999;">Programa ejecutado</div>';
-            
             outputArea.scrollTop = outputArea.scrollHeight;
         }
 
@@ -1732,21 +1569,13 @@ FIN"></textarea>
                 display.innerHTML = '<p style="color: #666; font-size: 11px;">No hay variables definidas</p>';
                 return;
             }
-            
-            display.innerHTML = Object.entries(app.variables).map(([name, value]) => 
-                `<div class="variable-value-item">
-                    <span class="var-name">${name}</span>
-                    <span class="var-value">${value}</span>
-                </div>`
-            ).join('');
+            display.innerHTML = Object.entries(app.variables).map(([name, value]) => `<div class="variable-value-item"><span class="var-name">${name}</span><span class="var-value">${value}</span></div>`).join('');
         }
 
         function resetExecution() {
             app.variables = {};
             app.output = [];
-            document.querySelectorAll('.workspace-block').forEach(block => {
-                block.classList.remove('executing');
-            });
+            document.querySelectorAll('.workspace-block').forEach(block => block.classList.remove('executing'));
             document.getElementById('outputArea').textContent = 'El resultado aparecerá aquí...';
             document.getElementById('variablesDisplay').innerHTML = '<p style="color: #666; font-size: 11px;">Las variables aparecerán durante la ejecución...</p>';
         }
@@ -1758,6 +1587,7 @@ FIN"></textarea>
                 document.getElementById('workspaceContent').innerHTML = '<p style="color: #999; text-align: center; margin-top: 100px;" id="emptyMessage">Arrastra bloques aquí para construir tu programa</p>';
                 document.getElementById('variablesList').innerHTML = '';
                 document.getElementById('codeEditor').value = '';
+                updateSyntaxHighlight();
                 resetExecution();
                 deselectAll();
             }
@@ -1770,21 +1600,12 @@ FIN"></textarea>
                 zoomLevel: app.zoomLevel,
                 variableNames: app.variableNames,
                 blocks: app.blocks.map(block => ({
-                    id: block.id,
-                    type: block.type,
-                    x: block.x,
-                    y: block.y,
-                    data: block.data,
-                    children: block.children || [],
-                    parent: block.parent,
-                    isNested: block.isNested
+                    id: block.id, type: block.type, x: block.x, y: block.y, data: block.data, children: block.children || [], parent: block.parent, isNested: block.isNested
                 }))
             };
-            
             const json = JSON.stringify(data, null, 2);
             const blob = new Blob([json], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            
             const a = document.createElement('a');
             a.href = url;
             a.download = `algoritmo_${new Date().toISOString().slice(0,10)}.json`;
@@ -1792,81 +1613,42 @@ FIN"></textarea>
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
             alert('✓ Algoritmo guardado correctamente');
         }
         
         function loadAlgorithm(event) {
             const file = event.target.files[0];
             if (!file) return;
-            
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    
-                    if (!data.blocks || !Array.isArray(data.blocks)) {
-                        alert('❌ Archivo no válido');
-                        return;
-                    }
-                    
+                    if (!data.blocks || !Array.isArray(data.blocks)) { alert('❌ Archivo no válido'); return; }
                     app.blocks = [];
                     app.variableNames = data.variableNames || [];
                     app.blockCounter = 0;
                     document.getElementById('workspaceContent').innerHTML = '<p style="color: #999; text-align: center; margin-top: 100px;" id="emptyMessage">Arrastra bloques aquí para construir tu programa</p>';
-                    
-                    if (data.zoomLevel) {
-                        app.zoomLevel = data.zoomLevel;
-                        applyZoom();
-                    }
-                    
+                    if (data.zoomLevel) { app.zoomLevel = data.zoomLevel; applyZoom(); }
                     renderVariablesList();
-                    
                     const blocksToLoad = data.blocks.sort((a, b) => {
                         if (a.isNested && !b.isNested) return 1;
                         if (!a.isNested && b.isNested) return -1;
                         return 0;
                     });
-                    
                     blocksToLoad.forEach(blockData => {
-                        const block = {
-                            id: blockData.id,
-                            type: blockData.type,
-                            x: blockData.x || 0,
-                            y: blockData.y || 0,
-                            data: blockData.data || {},
-                            children: blockData.children || [],
-                            parent: blockData.parent,
-                            isNested: blockData.isNested
-                        };
-                        
+                        const block = { id: blockData.id, type: blockData.type, x: blockData.x || 0, y: blockData.y || 0, data: blockData.data || {}, children: blockData.children || [], parent: blockData.parent, isNested: blockData.isNested };
                         app.blocks.push(block);
-                        
-                        if (block.isNested && block.parent) {
-                            renderNestedBlock(block, block.parent);
-                        } else {
-                            renderBlock(block);
-                        }
-                        
+                        if (block.isNested && block.parent) renderNestedBlock(block, block.parent);
+                        else renderBlock(block);
                         const blockNum = parseInt(block.id.replace('block_', ''));
-                        if (!isNaN(blockNum) && blockNum >= app.blockCounter) {
-                            app.blockCounter = blockNum + 1;
-                        }
+                        if (!isNaN(blockNum) && blockNum >= app.blockCounter) app.blockCounter = blockNum + 1;
                     });
-                    
                     const emptyMsg = document.getElementById('emptyMessage');
-                    if (emptyMsg && app.blocks.length > 0) {
-                        emptyMsg.style.display = 'none';
-                    }
-                    
+                    if (emptyMsg && app.blocks.length > 0) emptyMsg.style.display = 'none';
                     resetExecution();
                     alert('✓ Algoritmo cargado correctamente');
-                    
-                } catch (error) {
-                    alert('❌ Error al cargar el archivo: ' + error.message);
-                }
+                } catch (error) { alert('❌ Error al cargar el archivo: ' + error.message); }
             };
-            
             reader.readAsText(file);
             event.target.value = '';
         }
