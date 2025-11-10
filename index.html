@@ -520,6 +520,286 @@
             color: #1976D2;
             border-color: #2196F3;
         }
+
+        /* ESTILOS PARA EL MODO RETOS */
+        .challenges-panel {
+            flex: 1;
+            background: #f5f5f5;
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+        }
+        .challenges-panel.active { display: flex; }
+        
+        .challenges-header {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .challenges-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        
+        .progress-bar-container {
+            background: rgba(255,255,255,0.3);
+            height: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            height: 100%;
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            color: white;
+        }
+        
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .challenge-card {
+            background: white;
+            border: 3px solid #FF9800;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .challenge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .challenge-card.completed {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+        }
+        
+        .challenge-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .challenge-card.completed .challenge-number {
+            background: #4CAF50;
+        }
+        
+        .challenge-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .challenge-description {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .challenge-difficulty {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .difficulty-easy { background: #C8E6C9; color: #2E7D32; }
+        .difficulty-medium { background: #FFE082; color: #F57C00; }
+        .difficulty-hard { background: #FFCDD2; color: #C62828; }
+        
+        /* Modal de detalle del reto */
+        .challenge-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .challenge-modal.active { display: flex; }
+        
+        .challenge-modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .challenge-modal-header {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .challenge-modal-header h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .modal-close-btn:hover {
+            background: white;
+            color: #FF6B6B;
+            transform: rotate(90deg);
+        }
+        
+        .challenge-modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .challenge-detail-section {
+            margin-bottom: 20px;
+        }
+        
+        .challenge-detail-section h4 {
+            color: #FF6B6B;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .test-cases {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .test-case {
+            background: white;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .test-case-label {
+            font-weight: bold;
+            color: #2196F3;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .challenge-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-validate {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            flex: 1;
+        }
+        
+        .btn-solve-blocks {
+            background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            flex: 1;
+        }
+        
+        .validation-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .validation-result.success {
+            background: #C8E6C9;
+            color: #2E7D32;
+            border: 2px solid #4CAF50;
+        }
+        
+        .validation-result.error {
+            background: #FFCDD2;
+            color: #C62828;
+            border: 2px solid #f44336;
+        }
+        
+        .reset-progress-btn {
+            background: linear-gradient(45deg, #757575, #616161);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -531,6 +811,7 @@
             <div class="mode-switcher">
                 <button class="mode-btn active" id="btnModeBlocks">🧩 Modo Bloques</button>
                 <button class="mode-btn" id="btnModeText">📝 Modo Texto</button>
+                <button class="mode-btn" id="btnModeChallenges">🎯 Modo Retos</button>
             </div>
         </div>
 
@@ -637,6 +918,21 @@ FIN" spellcheck="false"></textarea>
                 </div>
             </div>
 
+            <!-- NUEVO PANEL DE RETOS -->
+            <div class="challenges-panel" id="challengesPanel">
+                <div class="challenges-header">
+                    <h2>🎯 Retos de Condicionales</h2>
+                    <p style="margin: 0; font-size: 14px;">Completa los 30 retos para dominar las estructuras condicionales</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar">0/30 completados (0%)</div>
+                    </div>
+                </div>
+                
+                <div class="challenges-grid" id="challengesGrid"></div>
+                
+                <button class="reset-progress-btn" id="btnResetProgress">🔄 Reiniciar Progreso</button>
+            </div>
+
             <div class="controls-panel">
                 <div class="panel-title">🎮 Controles</div>
                 <button class="btn-execute" id="btnExecute">▶️ Ejecutar Programa</button>
@@ -659,9 +955,423 @@ FIN" spellcheck="false"></textarea>
         </div>
     </div>
 
+    <!-- MODAL DE DETALLE DEL RETO -->
+    <div class="challenge-modal" id="challengeModal">
+        <div class="challenge-modal-content">
+            <div class="challenge-modal-header">
+                <h3 id="modalChallengeTitle">Reto #1</h3>
+                <p id="modalChallengeDifficulty"></p>
+                <button class="modal-close-btn" id="modalCloseBtn">✕</button>
+            </div>
+            <div class="challenge-modal-body">
+                <div class="challenge-detail-section">
+                    <h4>📋 Descripción del Problema</h4>
+                    <p id="modalChallengeDescription"></p>
+                </div>
+                
+                <div class="challenge-detail-section">
+                    <h4>🧪 Casos de Prueba</h4>
+                    <div class="test-cases" id="modalTestCases"></div>
+                </div>
+                
+                <div class="challenge-detail-section">
+                    <h4>💡 Pista</h4>
+                    <p id="modalChallengeHint"></p>
+                </div>
+                
+                <div class="validation-result" id="validationResult"></div>
+                
+                <div class="challenge-actions">
+                    <button class="btn-solve-blocks" id="btnSolveInBlocks">🧩 Resolver en Bloques</button>
+                    <button class="btn-validate" id="btnValidateChallenge">✓ Validar Solución</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        let app = { blocks: [], variables: {}, output: [], variableNames: [], blockCounter: 0, selectedBlockId: null, zoomLevel: 1, editorZoomLevel: 100, currentMode: 'blocks', autocompleteIndex: 0 };
+        let app = { 
+            blocks: [], 
+            variables: {}, 
+            output: [], 
+            variableNames: [], 
+            blockCounter: 0, 
+            selectedBlockId: null, 
+            zoomLevel: 1, 
+            editorZoomLevel: 100, 
+            currentMode: 'blocks', 
+            autocompleteIndex: 0,
+            currentChallenge: null,
+            completedChallenges: []
+        };
         
+        // Definición de los 30 retos de condicionales
+        const challenges = [
+            {
+                id: 1,
+                title: "Par o Impar",
+                description: "Pide un número al usuario y determina si es PAR o IMPAR usando el operador módulo (%).",
+                difficulty: "easy",
+                hint: "Un número es par si el residuo de dividirlo entre 2 es igual a 0 (numero % 2 == 0)",
+                testCases: [
+                    { input: { numero: 4 }, output: "PAR" },
+                    { input: { numero: 7 }, output: "IMPAR" },
+                    { input: { numero: 0 }, output: "PAR" }
+                ]
+            },
+            {
+                id: 2,
+                title: "Mayor de Edad",
+                description: "Pide la edad de una persona y determina si es MAYOR DE EDAD (18 años o más) o MENOR DE EDAD.",
+                difficulty: "easy",
+                hint: "Usa la condición: SI edad >= 18",
+                testCases: [
+                    { input: { edad: 20 }, output: "MAYOR DE EDAD" },
+                    { input: { edad: 15 }, output: "MENOR DE EDAD" },
+                    { input: { edad: 18 }, output: "MAYOR DE EDAD" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Número Positivo o Negativo",
+                description: "Lee un número y determina si es POSITIVO, NEGATIVO o CERO.",
+                difficulty: "easy",
+                hint: "Necesitas dos condiciones: una para verificar si es mayor que 0, otra para verificar si es menor que 0",
+                testCases: [
+                    { input: { numero: 5 }, output: "POSITIVO" },
+                    { input: { numero: -3 }, output: "NEGATIVO" },
+                    { input: { numero: 0 }, output: "CERO" }
+                ]
+            },
+            {
+                id: 4,
+                title: "Calificación Aprobatoria",
+                description: "Pide una calificación (0-100) y determina si el estudiante APROBÓ (>=60) o REPROBÓ (<60).",
+                difficulty: "easy",
+                hint: "La condición de aprobación es: calificacion >= 60",
+                testCases: [
+                    { input: { calificacion: 75 }, output: "APROBÓ" },
+                    { input: { calificacion: 45 }, output: "REPROBÓ" },
+                    { input: { calificacion: 60 }, output: "APROBÓ" }
+                ]
+            },
+            {
+                id: 5,
+                title: "Día Laboral o Fin de Semana",
+                description: "Lee un número del 1 al 7 (día de la semana, donde 1=Lunes) y determina si es DÍA LABORAL (1-5) o FIN DE SEMANA (6-7).",
+                difficulty: "easy",
+                hint: "Si el día es menor o igual a 5, es día laboral",
+                testCases: [
+                    { input: { dia: 3 }, output: "DÍA LABORAL" },
+                    { input: { dia: 6 }, output: "FIN DE SEMANA" },
+                    { input: { dia: 1 }, output: "DÍA LABORAL" }
+                ]
+            },
+            {
+                id: 6,
+                title: "Múltiplo de 5",
+                description: "Pide un número y verifica si es MÚLTIPLO DE 5 o NO ES MÚLTIPLO DE 5.",
+                difficulty: "easy",
+                hint: "Un número es múltiplo de 5 si numero % 5 == 0",
+                testCases: [
+                    { input: { numero: 20 }, output: "MÚLTIPLO DE 5" },
+                    { input: { numero: 17 }, output: "NO ES MÚLTIPLO DE 5" },
+                    { input: { numero: 0 }, output: "MÚLTIPLO DE 5" }
+                ]
+            },
+            {
+                id: 7,
+                title: "Descuento por Compra",
+                description: "Lee el monto de una compra. Si es mayor a 100, aplica un descuento del 10% y muestra el TOTAL CON DESCUENTO, sino muestra el TOTAL SIN DESCUENTO.",
+                difficulty: "medium",
+                hint: "Primero verifica si monto > 100, luego calcula: total = monto - (monto * 0.10)",
+                testCases: [
+                    { input: { monto: 150 }, output: "135" },
+                    { input: { monto: 80 }, output: "80" },
+                    { input: { monto: 100 }, output: "100" }
+                ]
+            },
+            {
+                id: 8,
+                title: "El Mayor de Dos",
+                description: "Pide dos números y determina cuál es el MAYOR, o si son IGUALES.",
+                difficulty: "easy",
+                hint: "Usa SI num1 > num2, SINO SI num1 < num2, SINO (son iguales)",
+                testCases: [
+                    { input: { num1: 10, num2: 5 }, output: "10" },
+                    { input: { num1: 3, num2: 8 }, output: "8" },
+                    { input: { num1: 7, num2: 7 }, output: "IGUALES" }
+                ]
+            },
+            {
+                id: 9,
+                title: "Clasificación por Edad",
+                description: "Lee la edad y clasifica: NIÑO (0-12), ADOLESCENTE (13-17), ADULTO (18-59), ADULTO MAYOR (60+).",
+                difficulty: "medium",
+                hint: "Necesitas múltiples condiciones anidadas o varios SI-SINO",
+                testCases: [
+                    { input: { edad: 8 }, output: "NIÑO" },
+                    { input: { edad: 15 }, output: "ADOLESCENTE" },
+                    { input: { edad: 35 }, output: "ADULTO" },
+                    { input: { edad: 65 }, output: "ADULTO MAYOR" }
+                ]
+            },
+            {
+                id: 10,
+                title: "Temperatura del Agua",
+                description: "Lee la temperatura del agua y clasifica su estado: SÓLIDO (<0°C), LÍQUIDO (0-99°C), GASEOSO (>=100°C).",
+                difficulty: "medium",
+                hint: "Usa condiciones para comparar con 0 y con 100",
+                testCases: [
+                    { input: { temperatura: -5 }, output: "SÓLIDO" },
+                    { input: { temperatura: 25 }, output: "LÍQUIDO" },
+                    { input: { temperatura: 100 }, output: "GASEOSO" }
+                ]
+            },
+            {
+                id: 11,
+                title: "Año Bisiesto",
+                description: "Lee un año y determina si es BISIESTO o NO BISIESTO. Un año es bisiesto si es divisible entre 4 Y (no es divisible entre 100 O es divisible entre 400).",
+                difficulty: "hard",
+                hint: "Condición: (año % 4 == 0) Y ((año % 100 != 0) O (año % 400 == 0))",
+                testCases: [
+                    { input: { anio: 2020 }, output: "BISIESTO" },
+                    { input: { anio: 1900 }, output: "NO BISIESTO" },
+                    { input: { anio: 2000 }, output: "BISIESTO" }
+                ]
+            },
+            {
+                id: 12,
+                title: "Calculadora de IMC",
+                description: "Lee peso (kg) y altura (m). Calcula IMC = peso / (altura * altura). Clasifica: BAJO PESO (<18.5), NORMAL (18.5-24.9), SOBREPESO (25-29.9), OBESIDAD (>=30).",
+                difficulty: "medium",
+                hint: "Primero calcula el IMC, luego usa múltiples condiciones para clasificar",
+                testCases: [
+                    { input: { peso: 70, altura: 1.75 }, output: "NORMAL" },
+                    { input: { peso: 90, altura: 1.70 }, output: "SOBREPESO" },
+                    { input: { peso: 50, altura: 1.80 }, output: "BAJO PESO" }
+                ]
+            },
+            {
+                id: 13,
+                title: "Triángulo Válido",
+                description: "Lee tres lados (a, b, c) y determina si pueden formar un TRIÁNGULO VÁLIDO. Un triángulo es válido si la suma de dos lados es mayor que el tercer lado (para todas las combinaciones).",
+                difficulty: "medium",
+                hint: "Verifica: (a+b>c) Y (a+c>b) Y (b+c>a)",
+                testCases: [
+                    { input: { a: 3, b: 4, c: 5 }, output: "TRIÁNGULO VÁLIDO" },
+                    { input: { a: 1, b: 2, c: 5 }, output: "NO ES TRIÁNGULO" },
+                    { input: { a: 5, b: 5, c: 5 }, output: "TRIÁNGULO VÁLIDO" }
+                ]
+            },
+            {
+                id: 14,
+                title: "Múltiplo de 3 y 5",
+                description: "Lee un número y determina si es MÚLTIPLO DE 3 Y 5, SOLO MÚLTIPLO DE 3, SOLO MÚLTIPLO DE 5, o NINGUNO.",
+                difficulty: "medium",
+                hint: "Usa condiciones anidadas: primero verifica si es múltiplo de 3 Y 5",
+                testCases: [
+                    { input: { numero: 15 }, output: "MÚLTIPLO DE 3 Y 5" },
+                    { input: { numero: 9 }, output: "SOLO MÚLTIPLO DE 3" },
+                    { input: { numero: 10 }, output: "SOLO MÚLTIPLO DE 5" },
+                    { input: { numero: 7 }, output: "NINGUNO" }
+                ]
+            },
+            {
+                id: 15,
+                title: "Cajero Automático",
+                description: "Lee el saldo actual y el monto a retirar. Si hay suficiente saldo, muestra RETIRO EXITOSO y el nuevo saldo. Si no, muestra SALDO INSUFICIENTE.",
+                difficulty: "easy",
+                hint: "Verifica: SI monto <= saldo, entonces nuevo_saldo = saldo - monto",
+                testCases: [
+                    { input: { saldo: 1000, monto: 500 }, output: "RETIRO EXITOSO - Saldo: 500" },
+                    { input: { saldo: 200, monto: 300 }, output: "SALDO INSUFICIENTE" },
+                    { input: { saldo: 1000, monto: 1000 }, output: "RETIRO EXITOSO - Saldo: 0" }
+                ]
+            },
+            {
+                id: 16,
+                title: "Vocal o Consonante",
+                description: "Lee una letra (en minúscula) y determina si es VOCAL o CONSONANTE. Considera a, e, i, o, u como vocales.",
+                difficulty: "medium",
+                hint: "Usa múltiples comparaciones con O: SI letra == 'a' O letra == 'e' O ...",
+                testCases: [
+                    { input: { letra: 'a' }, output: "VOCAL" },
+                    { input: { letra: 'b' }, output: "CONSONANTE" },
+                    { input: { letra: 'u' }, output: "VOCAL" }
+                ]
+            },
+            {
+                id: 17,
+                title: "Signo del Zodíaco",
+                description: "Lee el día (1-31) y mes (1-12) de nacimiento. Determina si la persona es ARIES (21 mar - 19 abr) o TAURO (20 abr - 20 may).",
+                difficulty: "hard",
+                hint: "Para Aries: (mes==3 Y dia>=21) O (mes==4 Y dia<=19)",
+                testCases: [
+                    { input: { dia: 25, mes: 3 }, output: "ARIES" },
+                    { input: { dia: 15, mes: 4 }, output: "ARIES" },
+                    { input: { dia: 25, mes: 4 }, output: "TAURO" }
+                ]
+            },
+            {
+                id: 18,
+                title: "Número Divisible",
+                description: "Lee dos números (dividendo y divisor). Determina si el dividendo es DIVISIBLE entre el divisor (sin residuo). Si el divisor es 0, muestra ERROR.",
+                difficulty: "medium",
+                hint: "Primero verifica divisor != 0, luego verifica dividendo % divisor == 0",
+                testCases: [
+                    { input: { dividendo: 20, divisor: 5 }, output: "DIVISIBLE" },
+                    { input: { dividendo: 17, divisor: 3 }, output: "NO DIVISIBLE" },
+                    { input: { dividendo: 10, divisor: 0 }, output: "ERROR" }
+                ]
+            },
+            {
+                id: 19,
+                title: "Letra Mayúscula o Minúscula",
+                description: "Lee un carácter y determina si es MAYÚSCULA, MINÚSCULA o NO ES LETRA (considerando códigos ASCII: A-Z = 65-90, a-z = 97-122).",
+                difficulty: "hard",
+                hint: "En pseudocódigo puedes comparar caracteres directamente o usar condiciones de rango",
+                testCases: [
+                    { input: { caracter: 'A' }, output: "MAYÚSCULA" },
+                    { input: { caracter: 'b' }, output: "MINÚSCULA" },
+                    { input: { caracter: '5' }, output: "NO ES LETRA" }
+                ]
+            },
+            {
+                id: 20,
+                title: "Precio con IVA",
+                description: "Lee un precio base y un código de producto (1=comida, 2=medicina, 3=otros). Calcula el precio con IVA: comida 5%, medicina 0%, otros 16%.",
+                difficulty: "medium",
+                hint: "Usa condiciones para determinar el porcentaje de IVA según el código",
+                testCases: [
+                    { input: { precio: 100, codigo: 1 }, output: "105" },
+                    { input: { precio: 100, codigo: 2 }, output: "100" },
+                    { input: { precio: 100, codigo: 3 }, output: "116" }
+                ]
+            },
+            {
+                id: 21,
+                title: "Número en Rango",
+                description: "Lee un número y dos límites (min, max). Determina si el número está DENTRO DEL RANGO (entre min y max inclusive) o FUERA DEL RANGO.",
+                difficulty: "easy",
+                hint: "Verifica: numero >= min Y numero <= max",
+                testCases: [
+                    { input: { numero: 5, min: 1, max: 10 }, output: "DENTRO DEL RANGO" },
+                    { input: { numero: 15, min: 1, max: 10 }, output: "FUERA DEL RANGO" },
+                    { input: { numero: 1, min: 1, max: 10 }, output: "DENTRO DEL RANGO" }
+                ]
+            },
+            {
+                id: 22,
+                title: "Tipo de Triángulo",
+                description: "Lee tres lados (a, b, c). Si forman un triángulo válido, clasifica: EQUILÁTERO (3 lados iguales), ISÓSCELES (2 lados iguales), ESCALENO (ningún lado igual).",
+                difficulty: "hard",
+                hint: "Primero valida que sea triángulo, luego compara los lados",
+                testCases: [
+                    { input: { a: 5, b: 5, c: 5 }, output: "EQUILÁTERO" },
+                    { input: { a: 5, b: 5, c: 3 }, output: "ISÓSCELES" },
+                    { input: { a: 3, b: 4, c: 5 }, output: "ESCALENO" }
+                ]
+            },
+            {
+                id: 23,
+                title: "Conversor de Temperatura",
+                description: "Lee una temperatura y una escala (1=Celsius, 2=Fahrenheit). Si es Celsius, convierte a Fahrenheit: F = C*9/5 + 32. Si es Fahrenheit, convierte a Celsius: C = (F-32)*5/9.",
+                difficulty: "medium",
+                hint: "Usa un condicional para determinar qué conversión aplicar",
+                testCases: [
+                    { input: { temp: 0, escala: 1 }, output: "32 F" },
+                    { input: { temp: 32, escala: 2 }, output: "0 C" },
+                    { input: { temp: 100, escala: 1 }, output: "212 F" }
+                ]
+            },
+            {
+                id: 24,
+                title: "Ecuación Cuadrática",
+                description: "Lee a, b, c de la ecuación ax²+bx+c=0. Calcula el discriminante (b²-4ac). Si discriminante>0: DOS SOLUCIONES REALES, si =0: UNA SOLUCIÓN, si <0: SIN SOLUCIONES REALES.",
+                difficulty: "hard",
+                hint: "discriminante = b*b - 4*a*c",
+                testCases: [
+                    { input: { a: 1, b: -3, c: 2 }, output: "DOS SOLUCIONES REALES" },
+                    { input: { a: 1, b: -2, c: 1 }, output: "UNA SOLUCIÓN" },
+                    { input: { a: 1, b: 0, c: 1 }, output: "SIN SOLUCIONES REALES" }
+                ]
+            },
+            {
+                id: 25,
+                title: "Juego de Piedra, Papel o Tijera",
+                description: "Lee dos opciones (1=Piedra, 2=Papel, 3=Tijera). Determina: EMPATE, GANA JUGADOR 1, o GANA JUGADOR 2. Piedra gana a Tijera, Tijera gana a Papel, Papel gana a Piedra.",
+                difficulty: "hard",
+                hint: "Necesitas múltiples condiciones para comparar todas las combinaciones",
+                testCases: [
+                    { input: { j1: 1, j2: 3 }, output: "GANA JUGADOR 1" },
+                    { input: { j1: 2, j2: 1 }, output: "GANA JUGADOR 1" },
+                    { input: { j1: 1, j2: 1 }, output: "EMPATE" },
+                    { input: { j1: 3, j2: 2 }, output: "GANA JUGADOR 1" }
+                ]
+            },
+            {
+                id: 26,
+                title: "Validador de Contraseña",
+                description: "Lee una contraseña (como número de 4 dígitos). Es VÁLIDA si tiene exactamente 4 dígitos (1000-9999) y no es 1234. Muestra VÁLIDA o INVÁLIDA.",
+                difficulty: "medium",
+                hint: "Verifica: (password >= 1000 Y password <= 9999 Y password != 1234)",
+                testCases: [
+                    { input: { password: 5678 }, output: "VÁLIDA" },
+                    { input: { password: 123 }, output: "INVÁLIDA" },
+                    { input: { password: 1234 }, output: "INVÁLIDA" }
+                ]
+            },
+            {
+                id: 27,
+                title: "Calificación en Letra",
+                description: "Lee una calificación numérica (0-100) y conviértela a letra: A(90-100), B(80-89), C(70-79), D(60-69), F(<60).",
+                difficulty: "medium",
+                hint: "Usa condiciones anidadas comenzando por el mayor rango",
+                testCases: [
+                    { input: { calificacion: 95 }, output: "A" },
+                    { input: { calificacion: 85 }, output: "B" },
+                    { input: { calificacion: 55 }, output: "F" }
+                ]
+            },
+            {
+                id: 28,
+                title: "Calculadora Básica",
+                description: "Lee dos números y una operación (1=suma, 2=resta, 3=multiplicación, 4=división). Realiza la operación y muestra el resultado. Si es división y el segundo número es 0, muestra ERROR.",
+                difficulty: "medium",
+                hint: "Usa condiciones para cada operación, y para división verifica num2 != 0",
+                testCases: [
+                    { input: { num1: 10, num2: 5, op: 1 }, output: "15" },
+                    { input: { num1: 10, num2: 5, op: 4 }, output: "2" },
+                    { input: { num1: 10, num2: 0, op: 4 }, output: "ERROR" }
+                ]
+            },
+            {
+                id: 29,
+                title: "Estacionamiento",
+                description: "Lee las horas de estacionamiento. Tarifa: primera hora $20, horas adicionales $15 c/u, máximo $100 por día (más de 8 horas). Calcula el costo total.",
+                difficulty: "hard",
+                hint: "Calcula: SI horas > 8 ENTONCES 100, SINO SI horas == 1 ENTONCES 20, SINO 20 + (horas-1)*15",
+                testCases: [
+                    { input: { horas: 1 }, output: "20" },
+                    { input: { horas: 3 }, output: "50" },
+                    { input: { horas: 10 }, output: "100" }
+                ]
+            },
+            {
+                id: 30,
+                title: "El Mayor de Tres",
+                description: "Lee tres números y determina cuál es el MAYOR de los tres. Considera el caso donde dos o tres sean iguales.",
+                difficulty: "medium",
+                hint: "Compara primero dos números, luego compara el resultado con el tercero",
+                testCases: [
+                    { input: { num1: 10, num2: 5, num3: 8 }, output: "10" },
+                    { input: { num1: 3, num2: 15, num3: 9 }, output: "15" },
+                    { input: { num1: 7, num2: 7, num3: 7 }, output: "7" }
+                ]
+            }
+        ];
+
         const keywords = {
             'INICIO': { description: 'Marca el comienzo del algoritmo', syntax: 'INICIO' },
             'FIN': { description: 'Marca el final del algoritmo', syntax: 'FIN' },
@@ -690,8 +1400,10 @@ FIN" spellcheck="false"></textarea>
         };
 
         function init() {
+            loadCompletedChallenges();
             setupEventListeners();
             setupEditorFeatures();
+            setupChallengesMode();
             
             document.getElementById('btnCreateVar').onclick = createVariable;
             document.getElementById('btnExecute').onclick = executeProgram;
@@ -709,6 +1421,7 @@ FIN" spellcheck="false"></textarea>
             
             document.getElementById('btnModeBlocks').onclick = () => switchMode('blocks');
             document.getElementById('btnModeText').onclick = () => switchMode('text');
+            document.getElementById('btnModeChallenges').onclick = () => switchMode('challenges');
             document.getElementById('btnTextToBlocks').onclick = convertTextToBlocks;
             document.getElementById('btnExecuteText').onclick = executeTextCode;
 
@@ -718,6 +1431,327 @@ FIN" spellcheck="false"></textarea>
                     this.value = '';
                 }
             };
+        }
+
+        function setupChallengesMode() {
+            renderChallengesGrid();
+            updateProgressBar();
+            
+            document.getElementById('modalCloseBtn').onclick = closeModal;
+            document.getElementById('btnValidateChallenge').onclick = validateCurrentChallenge;
+            document.getElementById('btnSolveInBlocks').onclick = solveInBlocks;
+            document.getElementById('btnResetProgress').onclick = resetProgress;
+            
+            document.getElementById('challengeModal').onclick = (e) => {
+                if (e.target.id === 'challengeModal') closeModal();
+            };
+        }
+
+        function renderChallengesGrid() {
+            const grid = document.getElementById('challengesGrid');
+            grid.innerHTML = '';
+            
+            challenges.forEach(challenge => {
+                const card = document.createElement('div');
+                card.className = 'challenge-card';
+                if (app.completedChallenges.includes(challenge.id)) {
+                    card.classList.add('completed');
+                }
+                
+                const difficultyClass = `difficulty-${challenge.difficulty}`;
+                const difficultyText = {
+                    'easy': 'Fácil',
+                    'medium': 'Medio',
+                    'hard': 'Difícil'
+                }[challenge.difficulty];
+                
+                card.innerHTML = `
+                    <div class="challenge-number">${challenge.id}</div>
+                    <div class="challenge-title">${challenge.title}</div>
+                    <div class="challenge-description">${challenge.description.substring(0, 80)}...</div>
+                    <span class="challenge-difficulty ${difficultyClass}">${difficultyText}</span>
+                `;
+                
+                card.onclick = () => openChallenge(challenge);
+                grid.appendChild(card);
+            });
+        }
+
+        function openChallenge(challenge) {
+            app.currentChallenge = challenge;
+            
+            document.getElementById('modalChallengeTitle').textContent = `Reto #${challenge.id}: ${challenge.title}`;
+            
+            const difficultyText = {
+                'easy': '🟢 Fácil',
+                'medium': '🟡 Medio',
+                'hard': '🔴 Difícil'
+            }[challenge.difficulty];
+            document.getElementById('modalChallengeDifficulty').textContent = difficultyText;
+            
+            document.getElementById('modalChallengeDescription').textContent = challenge.description;
+            document.getElementById('modalChallengeHint').textContent = challenge.hint;
+            
+            const testCasesContainer = document.getElementById('modalTestCases');
+            testCasesContainer.innerHTML = '';
+            challenge.testCases.forEach((testCase, index) => {
+                const testDiv = document.createElement('div');
+                testDiv.className = 'test-case';
+                
+                const inputs = Object.entries(testCase.input).map(([key, value]) => `${key} = ${value}`).join(', ');
+                
+                testDiv.innerHTML = `
+                    <div class="test-case-label">Caso ${index + 1}</div>
+                    <div><strong>Entrada:</strong> ${inputs}</div>
+                    <div><strong>Salida esperada:</strong> ${testCase.output}</div>
+                `;
+                testCasesContainer.appendChild(testDiv);
+            });
+            
+            document.getElementById('validationResult').style.display = 'none';
+            document.getElementById('challengeModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('challengeModal').classList.remove('active');
+            app.currentChallenge = null;
+        }
+
+        function solveInBlocks() {
+            closeModal();
+            switchMode('blocks');
+        }
+
+        async function validateCurrentChallenge() {
+            if (!app.currentChallenge) return;
+            
+            const resultDiv = document.getElementById('validationResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'validation-result';
+            
+            let allPassed = true;
+            let results = [];
+            
+            for (const testCase of app.currentChallenge.testCases) {
+                const testResult = await runTestCase(testCase);
+                results.push(testResult);
+                if (!testResult.passed) allPassed = false;
+            }
+            
+            if (allPassed) {
+                resultDiv.classList.add('success');
+                resultDiv.innerHTML = `
+                    <div style="font-size: 18px; margin-bottom: 10px;">✅ ¡Reto Completado!</div>
+                    <div>Has superado todos los casos de prueba correctamente.</div>
+                `;
+                markChallengeCompleted(app.currentChallenge.id);
+            } else {
+                resultDiv.classList.add('error');
+                let errorDetails = results.map((r, i) => 
+                    r.passed ? 
+                    `Caso ${i+1}: ✓` : 
+                    `Caso ${i+1}: ✗ (Esperado: ${r.expected}, Obtenido: ${r.actual})`
+                ).join('<br>');
+                resultDiv.innerHTML = `
+                    <div style="font-size: 18px; margin-bottom: 10px;">❌ Intenta de Nuevo</div>
+                    <div style="font-size: 12px; margin-top: 10px;">${errorDetails}</div>
+                `;
+            }
+        }
+
+        async function runTestCase(testCase) {
+            try {
+                app.variables = {};
+                app.output = [];
+                
+                Object.assign(app.variables, testCase.input);
+                
+                const topBlocks = app.blocks.filter(b => !b.isNested && b.type !== 'else').sort((a, b) => a.y - b.y);
+                for (const block of topBlocks) {
+                    await executeBlockSilent(block);
+                }
+                
+                const outputText = app.output.join(' ');
+                const expectedText = String(testCase.output).toUpperCase();
+                
+                const passed = outputText.toUpperCase().includes(expectedText);
+                
+                return {
+                    passed: passed,
+                    expected: testCase.output,
+                    actual: outputText
+                };
+            } catch (error) {
+                return {
+                    passed: false,
+                    expected: testCase.output,
+                    actual: 'ERROR: ' + error.message
+                };
+            }
+        }
+
+        async function executeBlockSilent(block) {
+            switch(block.type) {
+                case 'start':
+                case 'end':
+                    break;
+                case 'input':
+                    break;
+                case 'output':
+                    let txt = block.data.message || '';
+                    if (block.data.variable) {
+                        const val = app.variables[block.data.variable];
+                        txt += (txt ? ' ' : '') + (val !== undefined ? val : '');
+                    }
+                    app.output.push(txt);
+                    break;
+                case 'calculate':
+                    if (block.data.targetVar && block.data.expression) {
+                        try {
+                            const result = evaluateExpression(block.data.expression);
+                            app.variables[block.data.targetVar] = result;
+                        } catch (e) {}
+                    }
+                    break;
+                case 'if':
+                    if (block.data.condition) {
+                        try {
+                            const result = evaluateExpression(block.data.condition);
+                            if (result && block.children && block.children.length > 0) {
+                                // Encontrar el ELSE si existe entre los hijos
+                                const elseChild = block.children.find(cId => {
+                                    const c = app.blocks.find(b => b.id === cId);
+                                    return c && c.type === 'else';
+                                });
+                                
+                                // Obtener los hijos del ELSE para excluirlos también
+                                const elseBlock = elseChild ? app.blocks.find(b => b.id === elseChild) : null;
+                                const elseChildrenIds = elseBlock && elseBlock.children ? elseBlock.children : [];
+                                
+                                // Ejecutar solo los hijos que NO sean ELSE ni hijos del ELSE
+                                for (const childId of block.children) {
+                                    const child = app.blocks.find(b => b.id === childId);
+                                    if (child && child.type !== 'else' && !elseChildrenIds.includes(childId)) {
+                                        await executeBlockSilent(child);
+                                    }
+                                }
+                            }
+                            // Buscar el bloque ELSE correspondiente si la condición es falsa
+                            if (!result) {
+                                // Primero buscar en los hijos
+                                let elseBlock = null;
+                                if (block.children && block.children.length > 0) {
+                                    const elseChildId = block.children.find(cId => {
+                                        const c = app.blocks.find(b => b.id === cId);
+                                        return c && c.type === 'else';
+                                    });
+                                    if (elseChildId) {
+                                        elseBlock = app.blocks.find(b => b.id === elseChildId);
+                                    }
+                                }
+                                // Si no está en los hijos, buscar en nivel superior
+                                if (!elseBlock) {
+                                    elseBlock = app.blocks.find(b => 
+                                        b.type === 'else' && 
+                                        !b.isNested && 
+                                        b.y > block.y && 
+                                        b.y < block.y + 300
+                                    );
+                                }
+                                if (elseBlock) {
+                                    await executeBlockSilent(elseBlock);
+                                }
+                            }
+                        } catch (e) {}
+                    }
+                    break;
+                case 'else':
+                    // Solo se ejecuta si es llamado desde un IF
+                    if (block.children && block.children.length > 0) {
+                        for (const childId of block.children) {
+                            const child = app.blocks.find(b => b.id === childId);
+                            if (child) await executeBlockSilent(child);
+                        }
+                    }
+                    break;
+                case 'for':
+                    const varName = block.data.variable;
+                    const start = block.data.start ? parseInt(block.data.start) : 1;
+                    const end = block.data.end ? parseInt(block.data.end) : 10;
+                    if (varName) {
+                        const currentBlock = app.blocks.find(b => b.id === block.id);
+                        const childrenIds = currentBlock && currentBlock.children ? currentBlock.children : [];
+                        for (let i = start; i <= end; i++) {
+                            app.variables[varName] = i;
+                            if (childrenIds.length > 0) {
+                                for (const childId of childrenIds) {
+                                    const child = app.blocks.find(b => b.id === childId);
+                                    if (child) await executeBlockSilent(child);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case 'while':
+                    if (block.data.condition) {
+                        let iter = 0;
+                        const max = 100;
+                        try {
+                            let cond = evaluateExpression(block.data.condition);
+                            while (cond && iter < max) {
+                                iter++;
+                                if (block.children && block.children.length > 0) {
+                                    for (const childId of block.children) {
+                                        const child = app.blocks.find(b => b.id === childId);
+                                        if (child) await executeBlockSilent(child);
+                                    }
+                                }
+                                cond = evaluateExpression(block.data.condition);
+                            }
+                        } catch (e) {}
+                    }
+                    break;
+            }
+        }
+
+        function markChallengeCompleted(challengeId) {
+            if (!app.completedChallenges.includes(challengeId)) {
+                app.completedChallenges.push(challengeId);
+                saveCompletedChallenges();
+                renderChallengesGrid();
+                updateProgressBar();
+            }
+        }
+
+        function updateProgressBar() {
+            const completed = app.completedChallenges.length;
+            const total = challenges.length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = `${completed}/${total} completados (${percentage}%)`;
+        }
+
+        function saveCompletedChallenges() {
+            localStorage.setItem('completedChallenges', JSON.stringify(app.completedChallenges));
+        }
+
+        function loadCompletedChallenges() {
+            const saved = localStorage.getItem('completedChallenges');
+            if (saved) {
+                app.completedChallenges = JSON.parse(saved);
+            }
+        }
+
+        function resetProgress() {
+            if (confirm('¿Estás seguro de que quieres reiniciar todo tu progreso? Esta acción no se puede deshacer.')) {
+                app.completedChallenges = [];
+                saveCompletedChallenges();
+                renderChallengesGrid();
+                updateProgressBar();
+                alert('✓ Progreso reiniciado exitosamente');
+            }
         }
 
         function loadExample(type) {
@@ -890,20 +1924,28 @@ FIN" spellcheck="false"></textarea>
             
             const workspace = document.getElementById('workspace');
             const textPanel = document.getElementById('textEditorPanel');
+            const challengesPanel = document.getElementById('challengesPanel');
             const btnBlocks = document.getElementById('btnModeBlocks');
             const btnText = document.getElementById('btnModeText');
+            const btnChallenges = document.getElementById('btnModeChallenges');
+            
+            workspace.classList.add('hidden');
+            textPanel.classList.remove('active');
+            challengesPanel.classList.remove('active');
+            btnBlocks.classList.remove('active');
+            btnText.classList.remove('active');
+            btnChallenges.classList.remove('active');
             
             if (mode === 'blocks') {
                 workspace.classList.remove('hidden');
-                textPanel.classList.remove('active');
                 btnBlocks.classList.add('active');
-                btnText.classList.remove('active');
-            } else {
-                workspace.classList.add('hidden');
+            } else if (mode === 'text') {
                 textPanel.classList.add('active');
-                btnBlocks.classList.remove('active');
                 btnText.classList.add('active');
                 convertBlocksToText();
+            } else if (mode === 'challenges') {
+                challengesPanel.classList.add('active');
+                btnChallenges.classList.add('active');
             }
         }
         
@@ -1426,7 +2468,8 @@ FIN" spellcheck="false"></textarea>
         async function executeProgram() {
             app.variables = {};
             app.output = [];
-            const topBlocks = app.blocks.filter(b => !b.isNested).sort((a, b) => a.y - b.y);
+            // Filtrar bloques ELSE ya que solo deben ejecutarse desde IF
+            const topBlocks = app.blocks.filter(b => !b.isNested && b.type !== 'else').sort((a, b) => a.y - b.y);
             for (const block of topBlocks) { await executeBlock(block); }
             showOutput();
             showVariables();
@@ -1475,13 +2518,64 @@ FIN" spellcheck="false"></textarea>
                         try {
                             const result = evaluateExpression(block.data.condition);
                             app.output.push(`🔀 SI "${block.data.condition}" = ${result ? 'VERDADERO' : 'FALSO'}`);
+                            
                             if (result && block.children && block.children.length > 0) {
+                                // Encontrar el ELSE si existe entre los hijos
+                                const elseChild = block.children.find(cId => {
+                                    const c = app.blocks.find(b => b.id === cId);
+                                    return c && c.type === 'else';
+                                });
+                                
+                                // Obtener los hijos del ELSE para excluirlos también
+                                const elseBlock = elseChild ? app.blocks.find(b => b.id === elseChild) : null;
+                                const elseChildrenIds = elseBlock && elseBlock.children ? elseBlock.children : [];
+                                
+                                // Ejecutar solo los hijos que NO sean ELSE ni hijos del ELSE
                                 for (const childId of block.children) {
                                     const child = app.blocks.find(b => b.id === childId);
-                                    if (child) await executeBlock(child);
+                                    // Saltar si es ELSE o es hijo del ELSE
+                                    if (child && child.type !== 'else' && !elseChildrenIds.includes(childId)) {
+                                        await executeBlock(child);
+                                    }
+                                }
+                            }
+                            // Buscar el bloque ELSE correspondiente si la condición es falsa
+                            if (!result) {
+                                // Primero buscar en los hijos
+                                let elseBlock = null;
+                                if (block.children && block.children.length > 0) {
+                                    const elseChildId = block.children.find(cId => {
+                                        const c = app.blocks.find(b => b.id === cId);
+                                        return c && c.type === 'else';
+                                    });
+                                    if (elseChildId) {
+                                        elseBlock = app.blocks.find(b => b.id === elseChildId);
+                                    }
+                                }
+                                // Si no está en los hijos, buscar en nivel superior
+                                if (!elseBlock) {
+                                    elseBlock = app.blocks.find(b => 
+                                        b.type === 'else' && 
+                                        !b.isNested && 
+                                        b.y > block.y && 
+                                        b.y < block.y + 300
+                                    );
+                                }
+                                if (elseBlock) {
+                                    await executeBlock(elseBlock);
                                 }
                             }
                         } catch (e) { app.output.push(`❌ Error: ${e.message}`); }
+                    }
+                    break;
+                case 'else':
+                    // Solo se ejecuta si es llamado explícitamente desde un IF
+                    app.output.push(`🔄 SINO (ejecutando rama alternativa)`);
+                    if (block.children && block.children.length > 0) {
+                        for (const childId of block.children) {
+                            const child = app.blocks.find(b => b.id === childId);
+                            if (child) await executeBlock(child);
+                        }
                     }
                     break;
                 case 'for':
